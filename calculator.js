@@ -36,6 +36,9 @@ function attachEventListeners() {
     // Export button
     document.getElementById('export-btn').addEventListener('click', exportReport);
     
+    // Export Excel button
+    document.getElementById('export-excel-btn').addEventListener('click', exportExcelReport);
+    
     // Real-time calculation on input change
     document.addEventListener('input', function(e) {
         if (e.target.matches('input[type="number"]') || e.target.matches('.supplier-price')) {
@@ -534,6 +537,132 @@ function downloadReport(content) {
     const a = document.createElement('a');
     a.href = url;
     a.download = `Biochar_Cost_Report_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+function exportExcelReport() {
+    const reportData = {
+        date: new Date().toLocaleDateString(),
+        chemicals: collectChemicalData(),
+        biomass: collectBiomassData(),
+        transport: parseFloat(document.getElementById('transport-cost').value) || 0,
+        preparation: {
+            workers: parseFloat(document.getElementById('num-workers').value) || 1,
+            time: parseFloat(document.getElementById('prep-time').value) || 0,
+            laborRate: parseFloat(document.getElementById('labor-rate').value) || 151,
+            waterVolume: parseFloat(document.getElementById('water-volume').value) || 0,
+            waterCost: parseFloat(document.getElementById('water-cost').value) || 0
+        },
+        energy: collectEnergyData(),
+        equipment: collectEquipmentData(),
+        costs: {
+            precursor: parseFloat(document.getElementById('total-precursor-cost').textContent) || 0,
+            preparation: parseFloat(document.getElementById('total-prep-cost').textContent) || 0,
+            energy: parseFloat(document.getElementById('total-energy-cost').textContent) || 0,
+            equipment: parseFloat(document.getElementById('total-equipment-cost').textContent) || 0,
+            overhead: parseFloat(document.getElementById('overhead-cost').value) || 0,
+            misc: parseFloat(document.getElementById('misc-cost').value) || 0,
+            total: parseFloat(document.getElementById('grand-total').textContent) || 0,
+            perKg: parseFloat(document.getElementById('cost-per-kg').textContent) || 0
+        },
+        biomassInput: parseFloat(document.getElementById('biomass-input').value) || 1,
+        yieldPercentage: parseFloat(document.getElementById('yield-percentage').value) || 30,
+        actualYield: parseFloat(document.getElementById('adsorbent-yield').value) || 0
+    };
+    
+    let csv = generateCSVReport(reportData);
+    downloadCSV(csv);
+    alert('Excel report exported successfully! Check your downloads folder.');
+}
+
+function generateCSVReport(data) {
+    let csv = 'BIOCHAR/ADSORBENT PRODUCTION COST ANALYSIS REPORT\n';
+    csv += `Date:,${data.date}\n\n`;
+    
+    // Chemicals Section
+    csv += '1. CHEMICAL COSTS (C_Chemicals)\n';
+    csv += 'Chemical Name,Average Price (Rs./kg),Mass Used (g),Cost (Rs.)\n';
+    data.chemicals.forEach(chem => {
+        csv += `${chem.name},${chem.avgPrice.toFixed(2)},${chem.mass.toFixed(2)},${chem.cost.toFixed(2)}\n`;
+    });
+    csv += `Total Chemical Cost:,,,Rs.${data.costs.precursor.toFixed(2)}\n\n`;
+    
+    // Biomass Section
+    csv += '2. BIOMASS COSTS (C_Biomass)\n';
+    csv += 'Biomass Name,Price (Rs./kg),Mass Used (kg),Cost (Rs.)\n';
+    data.biomass.forEach(bio => {
+        csv += `${bio.name},${bio.price.toFixed(2)},${bio.mass.toFixed(2)},${bio.cost.toFixed(2)}\n`;
+    });
+    csv += '\n';
+    
+    // Transportation
+    csv += '3. TRANSPORTATION COSTS (C_Transport)\n';
+    csv += `Transport Cost:,Rs.${data.transport.toFixed(2)}\n\n`;
+    
+    // Preparation
+    csv += '4. PREPARATION COSTS (C_Preparation)\n';
+    csv += 'Parameter,Value\n';
+    csv += `Number of Workers,${data.preparation.workers}\n`;
+    csv += `Total Time (hours),${data.preparation.time}\n`;
+    csv += `Labor Rate (Rs./hour),${data.preparation.laborRate}\n`;
+    csv += `Labor Cost,Rs.${(data.preparation.workers * data.preparation.time * data.preparation.laborRate).toFixed(2)}\n`;
+    csv += `DI Water Used (L),${data.preparation.waterVolume}\n`;
+    csv += `Water Cost (Rs./L),${data.preparation.waterCost}\n`;
+    csv += `Total Water Cost,Rs.${(data.preparation.waterVolume * data.preparation.waterCost).toFixed(2)}\n`;
+    csv += `Total Preparation Cost,Rs.${data.costs.preparation.toFixed(2)}\n\n`;
+    
+    // Energy
+    csv += '5. ENERGY COSTS (C_Energy)\n';
+    csv += 'Stage Name,Power (kW),Time (hours),Energy (kWh)\n';
+    data.energy.forEach(stage => {
+        csv += `${stage.stage},${stage.power},${stage.time},${stage.kwh.toFixed(2)}\n`;
+    });
+    csv += `Total Energy Cost:,,,Rs.${data.costs.energy.toFixed(2)}\n\n`;
+    
+    // Equipment
+    csv += '6. EQUIPMENT DEPRECIATION (C_Equipment)\n';
+    csv += 'Equipment Name,Cost (Rs.),Lifespan (years),Hours/Year,Usage Hours,Depreciation (Rs.)\n';
+    data.equipment.forEach(equip => {
+        csv += `${equip.name},${equip.cost.toFixed(2)},${equip.lifespan},${equip.hoursPerYear},${equip.usage},${equip.depreciation.toFixed(2)}\n`;
+    });
+    csv += `Total Equipment Cost:,,,,,Rs.${data.costs.equipment.toFixed(2)}\n\n`;
+    
+    // Final Cost Breakdown
+    csv += '7. FINAL COST BREAKDOWN\n';
+    csv += 'Cost Component,Amount (Rs.)\n';
+    csv += `C_Precursors,${data.costs.precursor.toFixed(2)}\n`;
+    csv += `C_Preparation,${data.costs.preparation.toFixed(2)}\n`;
+    csv += `C_Energy,${data.costs.energy.toFixed(2)}\n`;
+    csv += `C_Equipment,${data.costs.equipment.toFixed(2)}\n`;
+    csv += `C_Overhead,${data.costs.overhead.toFixed(2)}\n`;
+    csv += `Additional Costs,${data.costs.misc.toFixed(2)}\n`;
+    csv += `TOTAL COST,${data.costs.total.toFixed(2)}\n\n`;
+    
+    // Yield and Cost per kg
+    csv += '8. YIELD AND COST PER KILOGRAM\n';
+    csv += 'Parameter,Value\n';
+    csv += `Biomass Input (kg),${data.biomassInput}\n`;
+    csv += `Yield Percentage (%),${data.yieldPercentage}\n`;
+    csv += `Actual Yield (kg),${data.actualYield}\n`;
+    csv += `COST PER KILOGRAM,Rs.${data.costs.perKg.toFixed(2)}/kg\n\n`;
+    
+    csv += 'Formula Used:\n';
+    csv += 'Total Cost = C_Precursors + C_Preparation + C_Energy + C_Equipment + C_Overhead + Additional Cost\n';
+    csv += 'C_Overhead = (C_Precursors + C_Preparation + C_Energy) x Overhead Rate\n';
+    csv += 'Cost per kg = Total_Cost / (Biomass_Input x Yield_%)\n';
+    
+    return csv;
+}
+
+function downloadCSV(content) {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Biochar_Cost_Report_${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

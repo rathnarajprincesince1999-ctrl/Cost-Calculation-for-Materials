@@ -313,7 +313,7 @@ header h1 {
     margin: 0;
 }
 
-.btn-calculate, .btn-export {
+.btn-calculate, .btn-export, .btn-excel {
     width: 100%;
     padding: 18px;
     border: none;
@@ -335,7 +335,12 @@ header h1 {
     color: white;
 }
 
-.btn-calculate:hover, .btn-export:hover {
+.btn-excel {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+}
+
+.btn-calculate:hover, .btn-export:hover, .btn-excel:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
