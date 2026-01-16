@@ -296,8 +296,21 @@ function calculateFinalCosts() {
     
     const miscCost = parseFloat(document.getElementById('misc-cost').value) || 0;
     
+    // Calculate additional costs from continuation
+    let additionalCosts = precursorCost + prepCost + energyCost + equipmentCost + overheadCost + miscCost;
+    let baseCostForAmount = 0;
+    let displayBaseCost = 0;
+    
+    // If continuing from a saved material
+    if (window.baseMaterialForContinuation) {
+        const base = window.baseMaterialForContinuation;
+        const amountUsed = parseFloat(document.getElementById('biomass-input').value) || base.availableAmount;
+        baseCostForAmount = base.baseCostPerKg * amountUsed;
+        displayBaseCost = baseCostForAmount;
+    }
+    
     // Calculate grand total
-    const grandTotal = precursorCost + prepCost + energyCost + equipmentCost + overheadCost + miscCost;
+    const grandTotal = baseCostForAmount + additionalCosts;
     
     // Update final breakdown
     document.getElementById('final-precursor').textContent = precursorCost.toFixed(2);
@@ -306,11 +319,32 @@ function calculateFinalCosts() {
     document.getElementById('final-equipment').textContent = equipmentCost.toFixed(2);
     document.getElementById('final-overhead').textContent = overheadCost.toFixed(2);
     document.getElementById('final-misc').textContent = miscCost.toFixed(2);
+    
+    // Show base cost if continuing
+    let baseCostRow = document.getElementById('base-cost-row');
+    if (window.baseMaterialForContinuation) {
+        if (!baseCostRow) {
+            baseCostRow = document.createElement('tr');
+            baseCostRow.id = 'base-cost-row';
+            baseCostRow.style.background = '#fff3cd';
+            baseCostRow.innerHTML = `
+                <td><strong>Base Material Cost (${window.baseMaterialForContinuation.name}):</strong></td>
+                <td><strong>₹<span id="final-base-cost">0.00</span></strong></td>
+            `;
+            const table = document.querySelector('.cost-breakdown table');
+            const totalRow = document.querySelector('.total-row');
+            table.insertBefore(baseCostRow, totalRow);
+        }
+        document.getElementById('final-base-cost').textContent = displayBaseCost.toFixed(2);
+    } else {
+        if (baseCostRow) baseCostRow.remove();
+    }
+    
     document.getElementById('grand-total').textContent = grandTotal.toFixed(2);
     
     // Calculate actual yield and cost per kg
     const biomassInput = parseFloat(document.getElementById('biomass-input').value) || 1;
-    const yieldPercentage = parseFloat(document.getElementById('yield-percentage').value) || 30;
+    const yieldPercentage = parseFloat(document.getElementById('yield-percentage').value) || 100;
     const actualYield = (biomassInput * yieldPercentage) / 100;
     document.getElementById('adsorbent-yield').value = actualYield.toFixed(3);
     
@@ -677,7 +711,14 @@ function downloadCSV(content) {
 }
 
 function saveMaterial() {
-    const materialName = prompt('Enter material name (e.g., TTS-H2SO4, Rice Husk-KOH):');
+    let materialName;
+    
+    if (window.baseMaterialForContinuation) {
+        materialName = prompt(`Enter name for continued material:\n(Base: ${window.baseMaterialForContinuation.name})`, `${window.baseMaterialForContinuation.name} + Process`);
+    } else {
+        materialName = prompt('Enter material name (e.g., TTS-H2SO4, Rice Husk-KOH):');
+    }
+    
     if (!materialName) return;
     
     const materialData = {
@@ -710,8 +751,23 @@ function saveMaterial() {
         actualYield: parseFloat(document.getElementById('adsorbent-yield').value) || 0
     };
     
+    // Add continuation info if applicable
+    if (window.baseMaterialForContinuation) {
+        materialData.isContinuation = true;
+        materialData.baseMaterial = window.baseMaterialForContinuation.name;
+        materialData.baseCost = window.baseMaterialForContinuation.baseCostPerKg * materialData.biomassInput;
+    }
+    
     savedMaterials.push(materialData);
     updateSavedMaterialsList();
+    
+    // Clear continuation mode
+    if (window.baseMaterialForContinuation) {
+        window.baseMaterialForContinuation = null;
+        const banner = document.getElementById('continuation-banner');
+        if (banner) banner.remove();
+    }
+    
     alert(`Material "${materialName}" saved! Total saved: ${savedMaterials.length}`);
 }
 
@@ -728,13 +784,210 @@ function updateSavedMaterialsList() {
     savedMaterials.forEach((mat, index) => {
         html += `
             <li style="background: white; padding: 10px; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                <span><strong>${index + 1}. ${mat.name}</strong> - Rs.${mat.costs.perKg.toFixed(2)}/kg</span>
-                <button onclick="removeMaterial(${index})" style="background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Remove</button>
+                <span><strong>${index + 1}. ${mat.name}</strong> - Rs.${mat.costs.perKg.toFixed(2)}/kg (Total: Rs.${mat.costs.total.toFixed(2)})</span>
+                <div>
+                    <button onclick="continueFromMaterial(${index})" style="background: #2196F3; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Continue +</button>
+                    <button onclick="loadMaterial(${index})" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Load</button>
+                    <button onclick="removeMaterial(${index})" style="background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Remove</button>
+                </div>
             </li>
         `;
     });
     html += '</ul>';
     listContainer.innerHTML = html;
+}
+
+function continueFromMaterial(index) {
+    const baseMaterial = savedMaterials[index];
+    
+    if (!confirm(`Continue calculation from "${baseMaterial.name}"?\n\nBase Cost: Rs.${baseMaterial.costs.total.toFixed(2)} (Rs.${baseMaterial.costs.perKg.toFixed(2)}/kg)\n\nYou can add additional chemicals, energy, labor, etc. and the costs will be added to the base material cost.`)) {
+        return;
+    }
+    
+    // Store base material info
+    window.baseMaterialForContinuation = {
+        index: index,
+        name: baseMaterial.name,
+        baseCost: baseMaterial.costs.total,
+        baseCostPerKg: baseMaterial.costs.perKg,
+        availableAmount: baseMaterial.actualYield,
+        originalData: baseMaterial
+    };
+    
+    // Clear calculator
+    document.getElementById('chemicals-container').innerHTML = '';
+    document.getElementById('biomass-container').innerHTML = '';
+    document.getElementById('energy-container').innerHTML = '';
+    document.getElementById('equipment-container').innerHTML = '';
+    
+    chemicalCount = 0;
+    biomassCount = 0;
+    energyCount = 0;
+    equipmentCount = 0;
+    
+    // Reset all inputs
+    document.getElementById('transport-cost').value = 0;
+    document.getElementById('num-workers').value = 1;
+    document.getElementById('prep-time').value = 0;
+    document.getElementById('labor-rate').value = 151;
+    document.getElementById('water-volume').value = 0;
+    document.getElementById('water-cost').value = 2;
+    document.getElementById('electricity-rate').value = 7;
+    document.getElementById('overhead-rate').value = 10;
+    document.getElementById('misc-cost').value = 0;
+    document.getElementById('biomass-input').value = baseMaterial.actualYield;
+    document.getElementById('yield-percentage').value = 100;
+    
+    // Show continuation banner
+    showContinuationBanner();
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    calculateAll();
+}
+
+function showContinuationBanner() {
+    const base = window.baseMaterialForContinuation;
+    
+    // Remove existing banner if any
+    const existingBanner = document.getElementById('continuation-banner');
+    if (existingBanner) existingBanner.remove();
+    
+    const banner = document.createElement('div');
+    banner.id = 'continuation-banner';
+    banner.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);';
+    banner.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3 style="margin: 0 0 10px 0; font-size: 1.3em;">🔄 Continuing from: ${base.name}</h3>
+                <p style="margin: 0; opacity: 0.9;">Base Cost: Rs.${base.baseCost.toFixed(2)} | Base Cost/kg: Rs.${base.baseCostPerKg.toFixed(2)}/kg | Available: ${base.availableAmount} kg</p>
+                <p style="margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.8;">Add additional costs below. Final cost will include base material cost + new costs.</p>
+            </div>
+            <button onclick="cancelContinuation()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">Cancel</button>
+        </div>
+    `;
+    
+    const wrapper = document.querySelector('.calculator-wrapper');
+    wrapper.insertBefore(banner, wrapper.firstChild);
+}
+
+function cancelContinuation() {
+    if (confirm('Cancel continuation? All entered data will be lost.')) {
+        window.baseMaterialForContinuation = null;
+        const banner = document.getElementById('continuation-banner');
+        if (banner) banner.remove();
+        calculateAll();
+    }
+}
+
+function loadMaterial(index) {
+    const mat = savedMaterials[index];
+    if (!confirm(`Load "${mat.name}" data into calculator? Current data will be replaced.`)) return;
+    
+    // Clear existing entries
+    document.getElementById('chemicals-container').innerHTML = '';
+    document.getElementById('biomass-container').innerHTML = '';
+    document.getElementById('energy-container').innerHTML = '';
+    document.getElementById('equipment-container').innerHTML = '';
+    
+    chemicalCount = 0;
+    biomassCount = 0;
+    energyCount = 0;
+    equipmentCount = 0;
+    
+    // Load chemicals
+    mat.chemicals.forEach((chem, i) => {
+        if (i === 0) {
+            chemicalCount = 1;
+            const firstEntry = document.querySelector('.chemical-entry');
+            if (!firstEntry) addChemicalEntry();
+        } else {
+            addChemicalEntry();
+        }
+        
+        const entries = document.querySelectorAll('.chemical-entry');
+        const entry = entries[entries.length - 1];
+        entry.querySelector('.chem-name').value = chem.name;
+        entry.querySelector('.chem-mass').value = chem.mass;
+        
+        // Set average price in all supplier fields
+        const supplierInputs = entry.querySelectorAll('.supplier-price');
+        supplierInputs.forEach(input => input.value = chem.avgPrice);
+    });
+    
+    // Load biomass
+    mat.biomass.forEach((bio, i) => {
+        if (i === 0) {
+            biomassCount = 1;
+            const firstEntry = document.querySelector('.biomass-entry');
+            if (!firstEntry) addBiomassEntry();
+        } else {
+            addBiomassEntry();
+        }
+        
+        const entries = document.querySelectorAll('.biomass-entry');
+        const entry = entries[entries.length - 1];
+        entry.querySelector('.biomass-name').value = bio.name;
+        entry.querySelector('.biomass-price').value = bio.price;
+        entry.querySelector('.biomass-mass').value = bio.mass;
+    });
+    
+    // Load energy
+    mat.energy.forEach((stage, i) => {
+        if (i === 0) {
+            energyCount = 1;
+            const firstEntry = document.querySelector('.energy-entry');
+            if (!firstEntry) addEnergyEntry();
+        } else {
+            addEnergyEntry();
+        }
+        
+        const entries = document.querySelectorAll('.energy-entry');
+        const entry = entries[entries.length - 1];
+        entry.querySelector('.stage-name').value = stage.stage;
+        entry.querySelector('.power-rating').value = stage.power;
+        entry.querySelector('.energy-time').value = stage.time;
+    });
+    
+    // Load equipment
+    mat.equipment.forEach((equip, i) => {
+        if (i === 0) {
+            equipmentCount = 1;
+            const firstEntry = document.querySelector('.equipment-entry');
+            if (!firstEntry) addEquipmentEntry();
+        } else {
+            addEquipmentEntry();
+        }
+        
+        const entries = document.querySelectorAll('.equipment-entry');
+        const entry = entries[entries.length - 1];
+        entry.querySelector('.equipment-name').value = equip.name;
+        entry.querySelector('.equipment-cost').value = equip.cost;
+        entry.querySelector('.equipment-lifespan').value = equip.lifespan;
+        entry.querySelector('.equipment-hours-year').value = equip.hoursPerYear;
+        entry.querySelector('.equipment-usage').value = equip.usage;
+    });
+    
+    // Load other fields
+    document.getElementById('transport-cost').value = mat.transport;
+    document.getElementById('num-workers').value = mat.preparation.workers;
+    document.getElementById('prep-time').value = mat.preparation.time;
+    document.getElementById('labor-rate').value = mat.preparation.laborRate;
+    document.getElementById('water-volume').value = mat.preparation.waterVolume;
+    document.getElementById('water-cost').value = mat.preparation.waterCost;
+    document.getElementById('electricity-rate').value = 7; // Default
+    document.getElementById('misc-cost').value = mat.costs.misc;
+    document.getElementById('biomass-input').value = mat.biomassInput;
+    document.getElementById('yield-percentage').value = mat.yieldPercentage;
+    
+    // Recalculate
+    calculateAll();
+    
+    alert(`Material "${mat.name}" loaded! You can now modify and continue calculation.`);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function removeMaterial(index) {
