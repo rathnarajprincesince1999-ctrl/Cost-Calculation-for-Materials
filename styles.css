@@ -97,7 +97,7 @@ header h1 {
     font-size: 0.95em;
 }
 
-.chemical-entry, .biomass-entry, .energy-entry {
+.chemical-entry, .biomass-entry, .energy-entry, .equipment-entry {
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -105,13 +105,13 @@ header h1 {
     border: 1px solid #dee2e6;
 }
 
-.chemical-entry h3, .energy-entry h3 {
+.chemical-entry h3, .energy-entry h3, .equipment-entry h3 {
     color: #495057;
     margin-bottom: 15px;
     font-size: 1.2em;
 }
 
-.chem-name, .biomass-name, .stage-name {
+.chem-name, .biomass-name, .stage-name, .equipment-name {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -121,7 +121,7 @@ header h1 {
     transition: border-color 0.3s;
 }
 
-.chem-name:focus, .biomass-name:focus, .stage-name:focus {
+.chem-name:focus, .biomass-name:focus, .stage-name:focus, .equipment-name:focus {
     outline: none;
     border-color: #667eea;
 }
@@ -147,17 +147,38 @@ header h1 {
     border-color: #667eea;
 }
 
-.usage-input, .biomass-inputs, .energy-inputs {
+.usage-input, .biomass-inputs, .energy-inputs, .equipment-inputs {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
-.usage-input label, .biomass-inputs label, .energy-inputs label {
+.usage-input label, .biomass-inputs label, .energy-inputs label, .equipment-inputs label {
     font-weight: 600;
     color: #495057;
     min-width: 120px;
+}
+
+.equipment-inputs {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.equipment-cost, .equipment-lifespan, .equipment-hours-year, .equipment-usage {
+    padding: 10px;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    font-size: 0.95em;
+    transition: border-color 0.3s;
+}
+
+.equipment-cost:focus, .equipment-lifespan:focus, .equipment-hours-year:focus, .equipment-usage:focus {
+    outline: none;
+    border-color: #667eea;
 }
 
 .result-display {
