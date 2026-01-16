@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biochar/Adsorbent Cost Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Biochar/Adsorbent Production Cost Calculator</h1>
+            <p class="subtitle">Comprehensive Techno-Economic Analysis Tool</p>
+        </header>
+
+        <div class="calculator-wrapper">
+            <!-- Section 1: Chemical Costs -->
+            <div class="section">
+                <h2>1. Chemical Costs (C<sub>Chemicals</sub>)</h2>
+                <div class="info-box">
+                    <p>Enter prices from 5 suppliers for each chemical. Average will be calculated automatically.</p>
+                </div>
+                
+                <div id="chemicals-container">
+                    <div class="chemical-entry">
+                        <h3>Chemical 1</h3>
+                        <input type="text" class="chem-name" placeholder="Chemical Name (e.g., H₂SO₄)">
+                        <div class="price-inputs">
+                            <input type="number" class="supplier-price" placeholder="Supplier 1 (₹/kg)" step="0.01">
+                            <input type="number" class="supplier-price" placeholder="Supplier 2 (₹/kg)" step="0.01">
+                            <input type="number" class="supplier-price" placeholder="Supplier 3 (₹/kg)" step="0.01">
+                            <input type="number" class="supplier-price" placeholder="Supplier 4 (₹/kg)" step="0.01">
+                            <input type="number" class="supplier-price" placeholder="Supplier 5 (₹/kg)" step="0.01">
+                        </div>
+                        <div class="usage-input">
+                            <label>Mass Used (g):</label>
+                            <input type="number" class="chem-mass" placeholder="Mass in grams" step="0.01">
+                        </div>
+                        <div class="result-display">
+                            <span>Average Price: ₹<span class="avg-price">0.00</span>/kg</span>
+                            <span>Cost: ₹<span class="chem-cost">0.00</span></span>
+                        </div>
+                    </div>
+                </div>
+                <button id="add-chemical" class="btn-add">+ Add Another Chemical</button>
+                <div class="total-display">
+                    <strong>Total Chemical Cost: ₹<span id="total-chemical-cost">0.00</span></strong>
+                </div>
+            </div>
+
+            <!-- Section 2: Biomass Costs -->
+            <div class="section">
+                <h2>2. Biomass Costs (C<sub>Biomass</sub>)</h2>
+                <div class="info-box">
+                    <p>Enter biomass details. For agricultural waste, cost may be zero or negative.</p>
+                </div>
+                
+                <div id="biomass-container">
+                    <div class="biomass-entry">
+                        <input type="text" class="biomass-name" placeholder="Biomass Name (e.g., TTS seeds)">
+                        <div class="biomass-inputs">
+                            <label>Price (₹/kg):</label>
+                            <input type="number" class="biomass-price" placeholder="0 for waste" step="0.01">
+                            <label>Mass Used (kg):</label>
+                            <input type="number" class="biomass-mass" placeholder="Mass in kg" step="0.01">
+                        </div>
+                        <div class="result-display">
+                            <span>Cost: ₹<span class="biomass-cost">0.00</span></span>
+                        </div>
+                    </div>
+                </div>
+                <button id="add-biomass" class="btn-add">+ Add Another Biomass</button>
+                <div class="total-display">
+                    <strong>Total Biomass Cost: ₹<span id="total-biomass-cost">0.00</span></strong>
+                </div>
+            </div>
+
+            <!-- Section 3: Transportation Costs -->
+            <div class="section">
+                <h2>3. Transportation Costs (C<sub>Transport</sub>)</h2>
+                <div class="info-box">
+                    <p>Often included in chemical price. Enter 0 if already included.</p>
+                </div>
+                <div class="input-group">
+                    <label>Transportation Cost (₹):</label>
+                    <input type="number" id="transport-cost" placeholder="0" step="0.01" value="0">
+                </div>
+                <div class="formula-display">
+                    <strong>C<sub>Precursors</sub> = C<sub>Chemicals</sub> + C<sub>Biomass</sub> + C<sub>Transport</sub></strong>
+                    <div class="result-highlight">
+                        Total Precursor Cost: ₹<span id="total-precursor-cost">0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Preparation Costs -->
+            <div class="section">
+                <h2>4. Preparation Costs (C<sub>Preparation</sub>)</h2>
+                <div class="info-box">
+                    <p>Labor costs based on manpower and time. Default: ₹151/hour (India average)</p>
+                </div>
+                <div class="input-group">
+                    <label>Number of Workers:</label>
+                    <input type="number" id="num-workers" placeholder="1" value="1" min="1">
+                </div>
+                <div class="input-group">
+                    <label>Total Time (hours):</label>
+                    <input type="number" id="prep-time" placeholder="8" step="0.1" value="8">
+                </div>
+                <div class="input-group">
+                    <label>Labor Rate (₹/hour):</label>
+                    <input type="number" id="labor-rate" placeholder="151" step="0.01" value="151">
+                </div>
+                <div class="input-group">
+                    <label>DI Water Used (L):</label>
+                    <input type="number" id="water-volume" placeholder="10" step="0.1" value="10">
+                </div>
+                <div class="input-group">
+                    <label>DI Water Cost (₹/L):</label>
+                    <input type="number" id="water-cost" placeholder="2" step="0.01" value="2">
+                </div>
+                <div class="result-highlight">
+                    Labor Cost: ₹<span id="labor-cost">1208.00</span><br>
+                    Water Cost: ₹<span id="total-water-cost">20.00</span><br>
+                    <strong>Total Preparation Cost: ₹<span id="total-prep-cost">1228.00</span></strong>
+                </div>
+            </div>
+
+            <!-- Section 5: Energy Costs -->
+            <div class="section">
+                <h2>5. Energy Costs (C<sub>Energy</sub>)</h2>
+                <div class="info-box">
+                    <p>Calculate energy consumption for each processing stage (furnace, drying, stirring, etc.)</p>
+                </div>
+                
+                <div id="energy-container">
+                    <div class="energy-entry">
+                        <h3>Energy Stage 1</h3>
+                        <input type="text" class="stage-name" placeholder="Stage Name (e.g., Drying at 100°C)">
+                        <div class="energy-inputs">
+                            <label>Power (kW):</label>
+                            <input type="number" class="power-rating" placeholder="2.5" step="0.1">
+                            <label>Time (hours):</label>
+                            <input type="number" class="energy-time" placeholder="8" step="0.1">
+                        </div>
+                        <div class="result-display">
+                            <span>Energy: <span class="energy-kwh">0.00</span> kWh</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="add-energy" class="btn-add">+ Add Another Energy Stage</button>
+                
+                <div class="input-group">
+                    <label>Electricity Rate (₹/kWh):</label>
+                    <input type="number" id="electricity-rate" placeholder="7" step="0.01" value="7">
+                </div>
+                <div class="total-display">
+                    <strong>Total Energy: <span id="total-energy-kwh">0.00</span> kWh</strong><br>
+                    <strong>Total Energy Cost: ₹<span id="total-energy-cost">0.00</span></strong>
+                </div>
+            </div>
+
+            <!-- Section 6: Equipment Depreciation -->
+            <div class="section">
+                <h2>6. Equipment Depreciation (C<sub>Equipment</sub>)</h2>
+                <div class="info-box">
+                    <p>Calculate depreciation: Equipment Cost / (Lifespan × Hours/year) × Usage Hours</p>
+                </div>
+                
+                <div id="equipment-container">
+                    <div class="equipment-entry">
+                        <h3>Equipment 1</h3>
+                        <input type="text" class="equipment-name" placeholder="Equipment Name (e.g., Muffle Furnace)">
+                        <div class="equipment-inputs">
+                            <label>Equipment Cost (₹):</label>
+                            <input type="number" class="equipment-cost" placeholder="50000" step="0.01">
+                            <label>Lifespan (years):</label>
+                            <input type="number" class="equipment-lifespan" placeholder="10" step="1" value="10">
+                            <label>Operating Hours/Year:</label>
+                            <input type="number" class="equipment-hours-year" placeholder="2000" step="1" value="2000">
+                            <label>Usage Hours (this batch):</label>
+                            <input type="number" class="equipment-usage" placeholder="8" step="0.1">
+                        </div>
+                        <div class="result-display">
+                            <span>Depreciation: ₹<span class="equipment-depreciation">0.00</span></span>
+                        </div>
+                    </div>
+                </div>
+                <button id="add-equipment" class="btn-add">+ Add Another Equipment</button>
+                <div class="total-display">
+                    <strong>Total Equipment Cost: ₹<span id="total-equipment-cost">0.00</span></strong>
+                </div>
+            </div>
+
+            <!-- Section 7: Overhead & Additional Costs -->
+            <div class="section">
+                <h2>8. Overhead & Additional Costs</h2>
+                <div class="input-group">
+                    <label>Overhead Rate (%):</label>
+                    <input type="number" id="overhead-rate" placeholder="10" step="0.1" value="10">
+                    <small>Applied to: C_Precursors + C_Preparation + C_Energy (typically 10-15%)</small>
+                </div>
+                <div class="input-group">
+                    <label>Overhead Cost (Auto-calculated):</label>
+                    <input type="number" id="overhead-cost" readonly>
+                </div>
+                <div class="input-group">
+                    <label>Other Miscellaneous Costs (₹):</label>
+                    <input type="number" id="misc-cost" placeholder="0" step="0.01" value="0">
+                </div>
+            </div>
+
+            <!-- Final Calculation -->
+            <div class="section final-section">
+                <h2>📊 Final Cost Analysis</h2>
+                <div class="cost-breakdown">
+                    <table>
+                        <tr>
+                            <td>C<sub>Precursors</sub> (Chemicals + Biomass + Transport):</td>
+                            <td>₹<span id="final-precursor">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td>C<sub>Preparation</sub> (Labor + Water):</td>
+                            <td>₹<span id="final-prep">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td>C<sub>Energy</sub>:</td>
+                            <td>₹<span id="final-energy">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td>C<sub>Equipment</sub> (Depreciation):</td>
+                            <td>₹<span id="final-equipment">0.00</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>C<sub>Overhead</sub> (<span id="overhead-percent">10</span>% of direct costs):</td>
+                            <td>₹<span id="final-overhead">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td>Additional Costs:</td>
+                            <td>₹<span id="final-misc">0.00</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>TOTAL COST:</strong></td>
+                            <td><strong>₹<span id="grand-total">0.00</span></strong></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="input-group">
+                    <label>Biomass Input (kg):</label>
+                    <input type="number" id="biomass-input" placeholder="1" step="0.01" value="1">
+                </div>
+                <div class="input-group">
+                    <label>Yield Percentage (%):</label>
+                    <input type="number" id="yield-percentage" placeholder="30" step="0.1" value="30">
+                </div>
+                <div class="input-group">
+                    <label>Actual Adsorbent Yield (kg):</label>
+                    <input type="number" id="adsorbent-yield" readonly>
+                </div>
+                
+                <div class="result-highlight final-result">
+                    <h3>Cost per Kilogram: ₹<span id="cost-per-kg">0.00</span>/kg</h3>
+                </div>
+
+                <button id="calculate-btn" class="btn-calculate">🔄 Recalculate All</button>
+                <button id="export-btn" class="btn-export">📥 Export Report (PDF)</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>Developed based on comprehensive techno-economic analysis framework</p>
+            <p>© 2024 Biochar Cost Calculator | Research Tool</p>
+        </footer>
+    </div>
+
+    <script src="calculator.js"></script>
+</body>
+</html>

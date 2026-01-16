@@ -1,0 +1,115 @@
+═══════════════════════════════════════════════════════════════════════════════
+MANUSCRIPT MODIFICATIONS REQUIRED - COST CALCULATION METHODOLOGY
+═══════════════════════════════════════════════════════════════════════════════
+
+📍 LOCATION: Section "Total Cost Calculation for Carbon/Biochar Preparation"
+
+═══════════════════════════════════════════════════════════════════════════════
+MODIFICATION 1: Replace the "Sixth" point paragraph
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ DELETE THIS TEXT:
+"Sixth, a 10% offset allocation is incorporated to account for indirect costs 
+including transportation logistics, packaging materials, storage facilities, and 
+material handling."
+
+✅ REPLACE WITH:
+"Sixth, an overhead cost allocation (typically 10-15% of direct costs) is 
+incorporated to account for indirect expenses including facility rent, utilities, 
+administrative costs, packaging materials, and storage facilities. This overhead 
+rate should be adjusted based on institutional or industrial context. Seventh, 
+equipment depreciation costs are calculated by dividing the capital equipment 
+cost by its operational lifespan (in hours) and multiplying by actual usage time, 
+as expressed in Equation 22.1."
+
+═══════════════════════════════════════════════════════════════════════════════
+MODIFICATION 2: Add New Equation after Equation 22
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ ADD THIS NEW EQUATION:
+
+C_Equipment = Σ(Equipment_Cost_i / (Lifespan_years × Operating_hours_per_year)) × Usage_hours_i
+                                                                    Equation 22.1
+
+Where:
+- Equipment_Cost_i = Capital cost of equipment i (₹ or $)
+- Lifespan_years = Expected operational lifespan of equipment (years)
+- Operating_hours_per_year = Annual operating hours (typically 2000-2500 hours)
+- Usage_hours_i = Actual hours used for this batch preparation
+
+═══════════════════════════════════════════════════════════════════════════════
+MODIFICATION 3: Replace Final Total Cost Equation
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ DELETE THIS EQUATION:
+"Total cost = C_precursors + C_preparation + C_Energy + 10%_offset cost + Additional_cost"
+
+✅ REPLACE WITH:
+
+Total Cost = C_Precursors + C_Preparation + C_Energy + C_Equipment + C_Overhead + C_Miscellaneous
+                                                                    Equation 23
+
+Where:
+C_Overhead = (C_Precursors + C_Preparation + C_Energy) × Overhead_Rate
+
+The overhead rate typically ranges from 10-15% depending on institutional or 
+industrial operational context, accounting for facility maintenance, utilities, 
+administrative expenses, and indirect operational costs.
+
+═══════════════════════════════════════════════════════════════════════════════
+MODIFICATION 4: Add Cost per Kilogram Equation
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ ADD THIS NEW EQUATION:
+
+Cost per kg = Total_Cost / (Biomass_Input_kg × Yield_Percentage/100)    Equation 24
+
+This equation accounts for material losses during washing, drying, and activation 
+processes, providing a realistic cost assessment per kilogram of final adsorbent 
+product. The yield percentage is determined experimentally and varies based on 
+activation method, temperature, and precursor characteristics.
+
+═══════════════════════════════════════════════════════════════════════════════
+MODIFICATION 5: Update the Comprehensive Cost Assessment Paragraph
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ FIND THIS TEXT:
+"Seventh, additional miscellaneous costs such as equipment depreciation, 
+maintenance, quality control testing, and unforeseen contingencies are included 
+to ensure comprehensive cost coverage."
+
+✅ REPLACE WITH:
+"Eighth, additional miscellaneous costs such as equipment maintenance, packaging 
+materials, storage, and unforeseen contingencies are included to ensure 
+comprehensive cost coverage."
+
+═══════════════════════════════════════════════════════════════════════════════
+SUMMARY OF CHANGES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. ✅ Removed arbitrary "10% offset" terminology
+2. ✅ Added proper "Overhead Cost" with justification (10-15% of direct costs)
+3. ✅ Added Equipment Depreciation calculation (Equation 22.1)
+4. ✅ Added Yield-based Cost per kg calculation (Equation 24)
+5. ✅ Removed quality control costs from formula (kept as separate research expense)
+6. ✅ Made formula more scientifically rigorous and industry-standard
+
+═══════════════════════════════════════════════════════════════════════════════
+FINAL FORMULA STRUCTURE
+═══════════════════════════════════════════════════════════════════════════════
+
+Total Cost = C_Precursors + C_Preparation + C_Energy + C_Equipment + C_Overhead + C_Miscellaneous
+
+Where:
+• C_Precursors = C_Chemicals + C_Biomass + C_Transport
+• C_Preparation = Labor Cost + Water Cost
+• C_Energy = Σ(Power_i × Time_i) × Electricity_Rate
+• C_Equipment = Σ(Equipment_Cost / (Lifespan × Hours/Year)) × Usage_Hours
+• C_Overhead = (C_Precursors + C_Preparation + C_Energy) × Overhead_Rate (10-15%)
+• C_Miscellaneous = Other unforeseen costs
+
+Cost per kg = Total_Cost / (Biomass_Input × Yield_%)
+
+═══════════════════════════════════════════════════════════════════════════════
+END OF MODIFICATIONS
+═══════════════════════════════════════════════════════════════════════════════

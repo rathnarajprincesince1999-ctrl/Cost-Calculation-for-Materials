@@ -1,0 +1,519 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║     COMPREHENSIVE COST ASSESSMENT METHODOLOGY FOR BIOCHAR/ADSORBENT          ║
+║                    PRODUCTION: DEVELOPED FORMULA                              ║
+║                                                                               ║
+║                    Tribulus terrestris Biochar Research                       ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Introduction & Objectives
+2. Cost Components Overview
+3. Detailed Formula Development
+4. Mathematical Equations
+5. Implementation in Web Calculator
+6. Example Calculation
+7. Advantages of This Methodology
+8. References & Standards
+
+═══════════════════════════════════════════════════════════════════════════════
+1. INTRODUCTION & OBJECTIVES
+═══════════════════════════════════════════════════════════════════════════════
+
+This document presents a comprehensive techno-economic analysis framework for 
+calculating the production cost of biochar and activated carbon adsorbents. The 
+methodology was developed specifically for Tribulus terrestris seed-derived 
+biochar but is applicable to any biomass-based adsorbent synthesis.
+
+OBJECTIVES:
+• Provide accurate cost estimation for laboratory and industrial-scale production
+• Account for all direct and indirect costs in adsorbent synthesis
+• Enable comparison between different activation methods and precursors
+• Support economic feasibility assessment for commercialization
+• Standardize cost reporting in scientific literature
+
+═══════════════════════════════════════════════════════════════════════════════
+2. COST COMPONENTS OVERVIEW
+═══════════════════════════════════════════════════════════════════════════════
+
+The total production cost comprises SIX major components:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT 1: PRECURSOR COSTS (C_Precursors)                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Chemical reagents (acids, bases, activating agents)                       │
+│ • Biomass feedstock                                                         │
+│ • Transportation and logistics                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT 2: PREPARATION COSTS (C_Preparation)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Labor costs (manpower × time × hourly rate)                              │
+│ • Deionized water for washing and neutralization                           │
+│ • Manual operations (mixing, washing, drying)                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT 3: ENERGY COSTS (C_Energy)                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Thermal energy (carbonization, pyrolysis, calcination)                   │
+│ • Electrical energy (stirring, mixing, grinding)                           │
+│ • Drying operations at various temperatures                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT 4: EQUIPMENT DEPRECIATION (C_Equipment)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Muffle furnace, tube furnace, reactors                                   │
+│ • Drying ovens, hot air ovens                                              │
+│ • Grinding mills, sieves, mixers                                           │
+│ • Calculated based on usage hours and equipment lifespan                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT 5: OVERHEAD COSTS (C_Overhead)                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Facility rent and utilities                                              │
+│ • Administrative expenses                                                  │
+│ • Packaging materials and storage                                          │
+│ • Typically 10-15% of direct costs                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMPONENT 6: MISCELLANEOUS COSTS (C_Miscellaneous)                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ • Equipment maintenance and repairs                                         │
+│ • Unforeseen contingencies                                                 │
+│ • Safety equipment and consumables                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+3. DETAILED FORMULA DEVELOPMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+3.1 PRECURSOR COSTS (C_Precursors)
+───────────────────────────────────────────────────────────────────────────────
+
+C_Precursors = C_Chemicals + C_Biomass + C_Transport         [Equation 20]
+
+Where:
+
+C_Chemicals = Σ(i=1 to n) [(CX_i / 1000) × CY_i]            [Equation 20.1]
+
+    CX_i = Average price per kg of chemical i (₹ or $/kg)
+    CX_i = (Supplier1 + Supplier2 + Supplier3 + Supplier4 + Supplier5) / 5
+    CY_i = Mass of chemical i used (grams)
+    Division by 1000 converts grams to kilograms
+
+RATIONALE: Averaging prices from 5 suppliers minimizes procurement bias and 
+accounts for market fluctuations, providing realistic cost estimates.
+
+C_Biomass = Σ(j=1 to m) [Price_j × Mass_j]                  [Equation 20.5]
+
+    Price_j = Unit price of biomass j (₹ or $/kg)
+    Mass_j = Mass of biomass j used (kg)
+    
+NOTE: For agricultural waste (e.g., Tribulus terrestris seeds), this cost may 
+be zero or negative (disposal credit).
+
+C_Transport = Transportation and logistics costs (₹ or $)
+
+NOTE: Often included in chemical/biomass pricing; enter 0 if already included.
+
+───────────────────────────────────────────────────────────────────────────────
+3.2 PREPARATION COSTS (C_Preparation)
+───────────────────────────────────────────────────────────────────────────────
+
+C_Preparation = C_Labor + C_Water                            [Equation 21]
+
+C_Labor = Number_of_Workers × Time_hours × Labor_Rate
+
+    Labor_Rate = ₹151/hour (India average, 2024)
+    Time_hours = Total preparation time including all manual operations
+    
+C_Water = Volume_DI_Water (L) × Cost_per_Liter (₹/L)
+
+RATIONALE: Labor is a significant cost in batch production. Water costs are 
+often overlooked but important for large-scale operations.
+
+───────────────────────────────────────────────────────────────────────────────
+3.3 ENERGY COSTS (C_Energy)
+───────────────────────────────────────────────────────────────────────────────
+
+C_Energy = Σ(i=1 to n) [Power_i (kW) × Time_i (hours)] × Electricity_Rate
+                                                             [Equation 22]
+
+Where:
+    Power_i = Power consumption at stage i (kilowatts)
+    Time_i = Duration of stage i (hours)
+    Electricity_Rate = Local tariff (₹ or $/kWh)
+    n = Number of processing stages
+
+TYPICAL STAGES:
+• Pre-drying (80-110°C)
+• Carbonization/Pyrolysis (400-800°C)
+• Activation (500-900°C)
+• Post-drying (100-120°C)
+• Mechanical operations (grinding, mixing)
+
+RATIONALE: Energy is the largest cost component in thermal activation processes. 
+Accurate power ratings from equipment manuals are essential.
+
+───────────────────────────────────────────────────────────────────────────────
+3.4 EQUIPMENT DEPRECIATION (C_Equipment) - NEW
+───────────────────────────────────────────────────────────────────────────────
+
+C_Equipment = Σ(i=1 to n) [(Equipment_Cost_i) / (Lifespan_years × Operating_hours_per_year)] × Usage_hours_i
+                                                             [Equation 22.1]
+
+Where:
+    Equipment_Cost_i = Capital cost of equipment i (₹ or $)
+    Lifespan_years = Expected operational lifespan (typically 10-15 years)
+    Operating_hours_per_year = Annual operating hours (typically 2000-2500 hours)
+    Usage_hours_i = Actual hours used for this batch
+
+EXAMPLE:
+    Muffle Furnace Cost = ₹50,000
+    Lifespan = 10 years
+    Operating hours/year = 2000 hours
+    Usage for this batch = 8 hours
+    
+    Depreciation = (50,000 / (10 × 2000)) × 8 = ₹20.00
+
+RATIONALE: Equipment depreciation is a real cost that must be amortized across 
+production batches. This method provides accurate per-batch allocation.
+
+───────────────────────────────────────────────────────────────────────────────
+3.5 OVERHEAD COSTS (C_Overhead) - IMPROVED
+───────────────────────────────────────────────────────────────────────────────
+
+C_Overhead = (C_Precursors + C_Preparation + C_Energy) × Overhead_Rate
+
+    Overhead_Rate = 10-15% (adjustable based on context)
+    Default = 10% for academic/research settings
+    Industrial settings may use 12-15%
+
+RATIONALE: Overhead accounts for indirect costs that cannot be directly 
+attributed to production but are necessary for operations. The percentage-based 
+approach is standard in cost accounting and allows flexibility across different 
+institutional contexts.
+
+REPLACES: Previous arbitrary "10% offset cost" with scientifically justified 
+overhead allocation based on direct costs.
+
+───────────────────────────────────────────────────────────────────────────────
+3.6 MISCELLANEOUS COSTS (C_Miscellaneous)
+───────────────────────────────────────────────────────────────────────────────
+
+C_Miscellaneous = Sum of other unforeseen costs
+
+INCLUDES:
+• Equipment maintenance and repairs
+• Safety equipment (gloves, masks, goggles)
+• Consumables (filter paper, containers)
+• Waste disposal
+• Contingency buffer (typically 2-5% of total)
+
+═══════════════════════════════════════════════════════════════════════════════
+4. MATHEMATICAL EQUATIONS - COMPLETE FORMULA
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         MASTER COST EQUATION                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Total Cost = C_Precursors + C_Preparation + C_Energy + C_Equipment +       │
+│               C_Overhead + C_Miscellaneous                                   │
+│                                                            [Equation 23]     │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+EXPANDED FORM:
+
+Total Cost = [C_Chemicals + C_Biomass + C_Transport] +
+             [C_Labor + C_Water] +
+             [Σ(Power_i × Time_i) × Electricity_Rate] +
+             [Σ(Equipment_Cost / (Lifespan × Hours/Year)) × Usage] +
+             [(C_Precursors + C_Preparation + C_Energy) × Overhead_Rate] +
+             [C_Miscellaneous]
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    COST PER KILOGRAM EQUATION                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Cost per kg = Total_Cost / (Biomass_Input_kg × Yield_Percentage / 100)    │
+│                                                            [Equation 24]     │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+RATIONALE: This equation accounts for material losses during washing, drying, 
+and activation. Yield percentage is experimentally determined and varies based 
+on activation method (chemical vs. physical), temperature, and precursor type.
+
+TYPICAL YIELDS:
+• Physical activation: 20-35%
+• Chemical activation (H₂SO₄): 25-40%
+• Chemical activation (KOH): 30-50%
+• Chemical activation (ZnCl₂): 35-55%
+
+═══════════════════════════════════════════════════════════════════════════════
+5. IMPLEMENTATION IN WEB CALCULATOR
+═══════════════════════════════════════════════════════════════════════════════
+
+The developed formula has been implemented in an interactive web-based calculator
+with the following features:
+
+SECTION 1: CHEMICAL COSTS
+├─ Input: 5 supplier prices for each chemical
+├─ Input: Mass used (grams)
+├─ Auto-calculation: Average price per kg
+└─ Output: Individual and total chemical costs
+
+SECTION 2: BIOMASS COSTS
+├─ Input: Biomass price (₹/kg)
+├─ Input: Mass used (kg)
+└─ Output: Total biomass cost
+
+SECTION 3: TRANSPORTATION COSTS
+├─ Input: Transport cost (₹)
+└─ Output: Total precursor cost (Chemicals + Biomass + Transport)
+
+SECTION 4: PREPARATION COSTS
+├─ Input: Number of workers
+├─ Input: Time (hours)
+├─ Input: Labor rate (₹/hour) - Default: ₹151
+├─ Input: DI water volume (L)
+├─ Input: Water cost (₹/L)
+└─ Output: Labor cost, Water cost, Total preparation cost
+
+SECTION 5: ENERGY COSTS
+├─ Input: Power rating (kW) for each stage
+├─ Input: Time (hours) for each stage
+├─ Input: Electricity rate (₹/kWh)
+├─ Auto-calculation: Energy consumption (kWh) per stage
+└─ Output: Total energy (kWh), Total energy cost (₹)
+
+SECTION 6: EQUIPMENT DEPRECIATION
+├─ Input: Equipment cost (₹)
+├─ Input: Lifespan (years)
+├─ Input: Operating hours/year
+├─ Input: Usage hours for this batch
+├─ Auto-calculation: Depreciation per batch
+└─ Output: Total equipment depreciation cost
+
+SECTION 7: OVERHEAD & MISCELLANEOUS
+├─ Input: Overhead rate (%) - Default: 10%
+├─ Auto-calculation: Overhead cost based on direct costs
+├─ Input: Other miscellaneous costs (₹)
+└─ Output: Total overhead and miscellaneous costs
+
+SECTION 8: FINAL COST ANALYSIS
+├─ Display: Breakdown of all cost components
+├─ Input: Biomass input (kg)
+├─ Input: Yield percentage (%)
+├─ Auto-calculation: Actual adsorbent yield (kg)
+├─ Output: TOTAL COST (₹)
+└─ Output: COST PER KILOGRAM (₹/kg)
+
+FEATURES:
+✓ Real-time calculation on input change
+✓ Dynamic addition of multiple chemicals, biomass, energy stages, equipment
+✓ Export detailed cost report (text format)
+✓ Responsive design for mobile and desktop
+✓ Color-coded sections for easy navigation
+✓ Formula display for transparency
+
+═══════════════════════════════════════════════════════════════════════════════
+6. EXAMPLE CALCULATION - TRIBULUS TERRESTRIS BIOCHAR
+═══════════════════════════════════════════════════════════════════════════════
+
+SCENARIO: H₂SO₄ Chemical Activation of TTS Seeds
+
+INPUT PARAMETERS:
+───────────────────────────────────────────────────────────────────────────────
+Biomass Input: 1.0 kg Tribulus terrestris seeds
+Activation Method: Chemical (H₂SO₄)
+Expected Yield: 35%
+
+CHEMICALS:
+• H₂SO₄ (98%): Average price ₹80/kg, Used: 500g
+  Cost = (80 × 500) / 1000 = ₹40.00
+
+BIOMASS:
+• TTS Seeds: ₹0/kg (agricultural waste)
+  Cost = 0 × 1.0 = ₹0.00
+
+TRANSPORT:
+• Included in chemical price
+  Cost = ₹0.00
+
+C_Precursors = ₹40.00 + ₹0.00 + ₹0.00 = ₹40.00
+
+PREPARATION:
+• Workers: 1
+• Time: 12 hours (mixing, washing, drying)
+• Labor rate: ₹151/hour
+• Labor cost = 1 × 12 × 151 = ₹1,812.00
+• DI Water: 20 L × ₹2/L = ₹40.00
+
+C_Preparation = ₹1,812.00 + ₹40.00 = ₹1,852.00
+
+ENERGY:
+• Pre-drying (100°C): 2 kW × 4 hours = 8 kWh
+• Carbonization (500°C): 5 kW × 3 hours = 15 kWh
+• Post-drying (110°C): 2 kW × 2 hours = 4 kWh
+• Total: 27 kWh × ₹7/kWh = ₹189.00
+
+C_Energy = ₹189.00
+
+EQUIPMENT:
+• Muffle Furnace: ₹50,000, 10 years, 2000 hrs/year, 5 hours used
+  Depreciation = (50,000 / 20,000) × 5 = ₹12.50
+• Drying Oven: ₹30,000, 10 years, 2000 hrs/year, 6 hours used
+  Depreciation = (30,000 / 20,000) × 6 = ₹9.00
+
+C_Equipment = ₹12.50 + ₹9.00 = ₹21.50
+
+OVERHEAD:
+• Direct costs = ₹40.00 + ₹1,852.00 + ₹189.00 = ₹2,081.00
+• Overhead rate = 10%
+• Overhead = 2,081.00 × 0.10 = ₹208.10
+
+C_Overhead = ₹208.10
+
+MISCELLANEOUS:
+• Maintenance, consumables, contingency = ₹50.00
+
+C_Miscellaneous = ₹50.00
+
+───────────────────────────────────────────────────────────────────────────────
+TOTAL COST CALCULATION:
+───────────────────────────────────────────────────────────────────────────────
+
+Total Cost = ₹40.00 + ₹1,852.00 + ₹189.00 + ₹21.50 + ₹208.10 + ₹50.00
+Total Cost = ₹2,360.60
+
+YIELD CALCULATION:
+───────────────────────────────────────────────────────────────────────────────
+
+Actual Yield = 1.0 kg × 35% = 0.35 kg
+
+COST PER KILOGRAM:
+───────────────────────────────────────────────────────────────────────────────
+
+Cost per kg = ₹2,360.60 / 0.35 kg = ₹6,744.57/kg
+
+═══════════════════════════════════════════════════════════════════════════════
+7. ADVANTAGES OF THIS METHODOLOGY
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ COMPREHENSIVE: Accounts for all direct and indirect costs
+
+✓ TRANSPARENT: Clear breakdown of each cost component with mathematical equations
+
+✓ FLEXIBLE: Adjustable parameters for different contexts (academic, industrial)
+
+✓ STANDARDIZED: Based on cost accounting principles used in industry
+
+✓ REALISTIC: Includes often-overlooked costs (equipment depreciation, water, labor)
+
+✓ YIELD-ADJUSTED: Accounts for material losses during processing
+
+✓ SUPPLIER-AVERAGED: Minimizes price bias through 5-supplier averaging
+
+✓ SCALABLE: Applicable from laboratory to industrial scale
+
+✓ COMPARABLE: Enables comparison between different activation methods and precursors
+
+✓ VALIDATED: Implemented in functional web calculator for practical use
+
+✓ SCIENTIFICALLY RIGOROUS: Replaces arbitrary percentages with justified calculations
+
+═══════════════════════════════════════════════════════════════════════════════
+8. COMPARISON WITH PREVIOUS APPROACH
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ASPECT              │ PREVIOUS APPROACH      │ IMPROVED METHODOLOGY          │
+├─────────────────────┼────────────────────────┼───────────────────────────────┤
+│ Offset Cost         │ Arbitrary 10%          │ Justified overhead (10-15%)   │
+│ Equipment Cost      │ Mentioned, not calc.   │ Depreciation formula (Eq 22.1)│
+│ Yield Consideration │ Not included           │ Yield-based cost/kg (Eq 24)  │
+│ Testing Costs       │ Mentioned, not calc.   │ Excluded (research expense)   │
+│ Overhead Basis      │ Unclear                │ % of direct costs             │
+│ Cost per kg         │ Total / Yield          │ Total / (Input × Yield%)      │
+│ Transparency        │ Moderate               │ High (all equations explicit) │
+│ Flexibility         │ Low                    │ High (adjustable parameters)  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+9. RECOMMENDATIONS FOR MANUSCRIPT
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Replace "10% offset cost" with "Overhead cost (10-15% of direct costs)"
+
+2. Add Equation 22.1 for equipment depreciation calculation
+
+3. Add Equation 24 for yield-adjusted cost per kilogram
+
+4. Update final formula to Equation 23 (6 components instead of 5)
+
+5. Remove quality control costs from production cost formula
+   (Note: Testing costs are research expenses, not production costs)
+
+6. Add justification for overhead rate selection
+
+7. Include yield percentage discussion and typical ranges
+
+8. Reference the web calculator as a supplementary tool
+
+═══════════════════════════════════════════════════════════════════════════════
+10. REFERENCES & STANDARDS
+═══════════════════════════════════════════════════════════════════════════════
+
+COST ACCOUNTING PRINCIPLES:
+• Overhead allocation based on direct costs (standard practice)
+• Equipment depreciation using straight-line method
+• Labor costs based on national average wages
+
+ENERGY CALCULATIONS:
+• Power (kW) × Time (hours) = Energy (kWh)
+• Based on equipment specifications and manufacturer data
+
+LABOR RATES:
+• India average skilled labor: ₹151/hour (2024)
+• Source: Ministry of Labour & Employment, Government of India
+
+EQUIPMENT LIFESPAN:
+• Muffle furnaces: 10-15 years
+• Drying ovens: 10-12 years
+• Operating hours: 2000-2500 hours/year (standard industrial assumption)
+
+═══════════════════════════════════════════════════════════════════════════════
+CONCLUSION
+═══════════════════════════════════════════════════════════════════════════════
+
+This comprehensive cost assessment methodology provides a scientifically rigorous,
+transparent, and practical framework for calculating biochar/adsorbent production
+costs. The developed formula (Equation 23) with yield-adjusted cost per kilogram
+(Equation 24) represents a significant improvement over previous approaches by:
+
+1. Including equipment depreciation with proper calculation method
+2. Replacing arbitrary offset with justified overhead allocation
+3. Accounting for material losses through yield percentage
+4. Providing complete transparency through explicit equations
+5. Enabling practical implementation via web calculator
+
+The methodology is suitable for publication in peer-reviewed journals and can
+serve as a standard reference for techno-economic analysis in adsorbent research.
+
+═══════════════════════════════════════════════════════════════════════════════
+DOCUMENT VERSION: 1.0
+DATE: 2024
+DEVELOPED FOR: Tribulus terrestris Biochar Research Project
+═══════════════════════════════════════════════════════════════════════════════
