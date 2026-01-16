@@ -313,7 +313,7 @@ header h1 {
     margin: 0;
 }
 
-.btn-calculate, .btn-export, .btn-excel {
+.btn-calculate, .btn-export, .btn-excel, .btn-save, .btn-export-all {
     width: 100%;
     padding: 18px;
     border: none;
@@ -330,6 +330,11 @@ header h1 {
     color: white;
 }
 
+.btn-save {
+    background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
+    color: #333;
+}
+
 .btn-export {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
@@ -340,9 +345,26 @@ header h1 {
     color: white;
 }
 
-.btn-calculate:hover, .btn-export:hover, .btn-excel:hover {
+.btn-export-all {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.btn-calculate:hover, .btn-export:hover, .btn-excel:hover, .btn-save:hover, .btn-export-all:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.saved-materials-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.saved-materials-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
 }
 
 footer {

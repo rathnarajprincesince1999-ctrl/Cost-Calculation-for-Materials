@@ -5,6 +5,7 @@ let chemicalCount = 1;
 let biomassCount = 1;
 let energyCount = 1;
 let equipmentCount = 1;
+let savedMaterials = []; // Store multiple material calculations
 
 // Initialize calculator on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -38,6 +39,12 @@ function attachEventListeners() {
     
     // Export Excel button
     document.getElementById('export-excel-btn').addEventListener('click', exportExcelReport);
+    
+    // Save material button
+    document.getElementById('save-material-btn').addEventListener('click', saveMaterial);
+    
+    // Export all materials button
+    document.getElementById('export-all-btn').addEventListener('click', exportAllMaterials);
     
     // Real-time calculation on input change
     document.addEventListener('input', function(e) {
@@ -667,6 +674,143 @@ function downloadCSV(content) {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+}
+
+function saveMaterial() {
+    const materialName = prompt('Enter material name (e.g., TTS-H2SO4, Rice Husk-KOH):');
+    if (!materialName) return;
+    
+    const materialData = {
+        name: materialName,
+        date: new Date().toLocaleDateString(),
+        chemicals: collectChemicalData(),
+        biomass: collectBiomassData(),
+        transport: parseFloat(document.getElementById('transport-cost').value) || 0,
+        preparation: {
+            workers: parseFloat(document.getElementById('num-workers').value) || 1,
+            time: parseFloat(document.getElementById('prep-time').value) || 0,
+            laborRate: parseFloat(document.getElementById('labor-rate').value) || 151,
+            waterVolume: parseFloat(document.getElementById('water-volume').value) || 0,
+            waterCost: parseFloat(document.getElementById('water-cost').value) || 0
+        },
+        energy: collectEnergyData(),
+        equipment: collectEquipmentData(),
+        costs: {
+            precursor: parseFloat(document.getElementById('total-precursor-cost').textContent) || 0,
+            preparation: parseFloat(document.getElementById('total-prep-cost').textContent) || 0,
+            energy: parseFloat(document.getElementById('total-energy-cost').textContent) || 0,
+            equipment: parseFloat(document.getElementById('total-equipment-cost').textContent) || 0,
+            overhead: parseFloat(document.getElementById('overhead-cost').value) || 0,
+            misc: parseFloat(document.getElementById('misc-cost').value) || 0,
+            total: parseFloat(document.getElementById('grand-total').textContent) || 0,
+            perKg: parseFloat(document.getElementById('cost-per-kg').textContent) || 0
+        },
+        biomassInput: parseFloat(document.getElementById('biomass-input').value) || 1,
+        yieldPercentage: parseFloat(document.getElementById('yield-percentage').value) || 30,
+        actualYield: parseFloat(document.getElementById('adsorbent-yield').value) || 0
+    };
+    
+    savedMaterials.push(materialData);
+    updateSavedMaterialsList();
+    alert(`Material "${materialName}" saved! Total saved: ${savedMaterials.length}`);
+}
+
+function updateSavedMaterialsList() {
+    const listContainer = document.getElementById('saved-materials-list');
+    document.getElementById('saved-count').textContent = savedMaterials.length;
+    
+    if (savedMaterials.length === 0) {
+        listContainer.innerHTML = '<p style="color: #999;">No materials saved yet</p>';
+        return;
+    }
+    
+    let html = '<ul style="list-style: none; padding: 0;">';
+    savedMaterials.forEach((mat, index) => {
+        html += `
+            <li style="background: white; padding: 10px; margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>${index + 1}. ${mat.name}</strong> - Rs.${mat.costs.perKg.toFixed(2)}/kg</span>
+                <button onclick="removeMaterial(${index})" style="background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Remove</button>
+            </li>
+        `;
+    });
+    html += '</ul>';
+    listContainer.innerHTML = html;
+}
+
+function removeMaterial(index) {
+    savedMaterials.splice(index, 1);
+    updateSavedMaterialsList();
+}
+
+function exportAllMaterials() {
+    if (savedMaterials.length === 0) {
+        alert('No materials saved! Please save at least one material calculation first.');
+        return;
+    }
+    
+    let csv = 'COMPARATIVE COST ANALYSIS - MULTIPLE MATERIALS\n';
+    csv += `Generated: ${new Date().toLocaleDateString()}\n\n`;
+    
+    // Summary Table
+    csv += 'SUMMARY - COST COMPARISON\n';
+    csv += 'Material Name,Total Cost (Rs.),Biomass Input (kg),Yield (%),Actual Yield (kg),Cost per kg (Rs./kg)\n';
+    savedMaterials.forEach(mat => {
+        csv += `${mat.name},${mat.costs.total.toFixed(2)},${mat.biomassInput},${mat.yieldPercentage},${mat.actualYield},${mat.costs.perKg.toFixed(2)}\n`;
+    });
+    csv += '\n\n';
+    
+    // Detailed breakdown for each material
+    savedMaterials.forEach((mat, index) => {
+        csv += `\n${'='.repeat(80)}\n`;
+        csv += `MATERIAL ${index + 1}: ${mat.name}\n`;
+        csv += `${'='.repeat(80)}\n\n`;
+        
+        // Cost breakdown
+        csv += 'COST BREAKDOWN\n';
+        csv += 'Component,Amount (Rs.)\n';
+        csv += `Precursors,${mat.costs.precursor.toFixed(2)}\n`;
+        csv += `Preparation,${mat.costs.preparation.toFixed(2)}\n`;
+        csv += `Energy,${mat.costs.energy.toFixed(2)}\n`;
+        csv += `Equipment,${mat.costs.equipment.toFixed(2)}\n`;
+        csv += `Overhead,${mat.costs.overhead.toFixed(2)}\n`;
+        csv += `Miscellaneous,${mat.costs.misc.toFixed(2)}\n`;
+        csv += `TOTAL,${mat.costs.total.toFixed(2)}\n\n`;
+        
+        // Chemicals
+        if (mat.chemicals.length > 0) {
+            csv += 'CHEMICALS USED\n';
+            csv += 'Chemical Name,Avg Price (Rs./kg),Mass (g),Cost (Rs.)\n';
+            mat.chemicals.forEach(chem => {
+                csv += `${chem.name},${chem.avgPrice.toFixed(2)},${chem.mass.toFixed(2)},${chem.cost.toFixed(2)}\n`;
+            });
+            csv += '\n';
+        }
+        
+        // Energy stages
+        if (mat.energy.length > 0) {
+            csv += 'ENERGY CONSUMPTION\n';
+            csv += 'Stage,Power (kW),Time (hrs),Energy (kWh)\n';
+            mat.energy.forEach(stage => {
+                csv += `${stage.stage},${stage.power},${stage.time},${stage.kwh.toFixed(2)}\n`;
+            });
+            csv += '\n';
+        }
+        
+        csv += '\n';
+    });
+    
+    // Download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Comparative_Cost_Analysis_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    alert(`Comparative report exported with ${savedMaterials.length} materials!`);
 }
 
 // Initialize on load
