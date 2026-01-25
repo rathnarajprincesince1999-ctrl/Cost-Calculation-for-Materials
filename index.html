@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon/Biochar Cost Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .section { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007bff; }
+        input, select { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .chemical-entry, .biomass-entry { border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        .remove-btn { background: #dc3545; padding: 5px 10px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Cost Analysis Framework for Carbon/Biochar Preparation</h1>
+    
+    <div class="grid">
+        <!-- Chemical Costs Section -->
+        <div class="section">
+            <h3>Chemical Costs (Equation 3.1-3.2)</h3>
+            <div id="chemicals-container">
+                <div class="chemical-entry">
+                    <input type="text" placeholder="Chemical Name" class="chem-name">
+                    <input type="number" placeholder="Price 1 (₹/kg)" class="price1" step="0.01">
+                    <input type="number" placeholder="Price 2 (₹/kg)" class="price2" step="0.01">
+                    <input type="number" placeholder="Price 3 (₹/kg)" class="price3" step="0.01">
+                    <input type="number" placeholder="Price 4 (₹/kg)" class="price4" step="0.01">
+                    <input type="number" placeholder="Price 5 (₹/kg)" class="price5" step="0.01">
+                    <input type="number" placeholder="Mass Used (kg)" class="mass-used" step="0.001">
+                </div>
+            </div>
+            <button onclick="addChemical()">Add Chemical</button>
+        </div>
+
+        <!-- Biomass Costs Section -->
+        <div class="section">
+            <h3>Biomass Costs (Equation 3.3-3.5)</h3>
+            <div id="biomass-container">
+                <div class="biomass-entry">
+                    <input type="text" placeholder="Biomass Name" class="biomass-name">
+                    <input type="number" placeholder="Price 1 (₹/kg)" class="b-price1" step="0.01">
+                    <input type="number" placeholder="Price 2 (₹/kg)" class="b-price2" step="0.01">
+                    <input type="number" placeholder="Price 3 (₹/kg)" class="b-price3" step="0.01">
+                    <input type="number" placeholder="Price 4 (₹/kg)" class="b-price4" step="0.01">
+                    <input type="number" placeholder="Price 5 (₹/kg)" class="b-price5" step="0.01">
+                    <input type="number" placeholder="Mass Used (kg)" class="biomass-mass" step="0.001">
+                </div>
+            </div>
+            <button onclick="addBiomass()">Add Biomass</button>
+            <input type="number" id="transport-cost" placeholder="Transportation Cost (₹)" step="0.01">
+        </div>
+
+        <!-- Preparation Costs Section -->
+        <div class="section">
+            <h3>Preparation Costs (Equation 4)</h3>
+            <input type="number" id="manpower" placeholder="Number of Personnel" step="1" value="1">
+            <input type="number" id="time-hours" placeholder="Time (hours)" step="0.1">
+            <input type="number" id="hourly-rate" placeholder="Hourly Rate (₹/hour)" step="0.01" value="151">
+            <input type="number" id="water-cost" placeholder="DI Water Cost (₹)" step="0.01">
+        </div>
+
+        <!-- Energy Costs Section -->
+        <div class="section">
+            <h3>Energy Costs (Equation 5)</h3>
+            <div id="energy-container">
+                <div class="energy-entry">
+                    <input type="text" placeholder="Equipment/Process Name" class="equipment-name">
+                    <input type="number" placeholder="Power (kW)" class="power" step="0.01">
+                    <input type="number" placeholder="Time (hours)" class="energy-time" step="0.1">
+                </div>
+            </div>
+            <button onclick="addEnergyEntry()">Add Energy Entry</button>
+            <input type="number" id="electricity-rate" placeholder="Electricity Rate (₹/kWh)" step="0.01" value="5">
+        </div>
+
+        <!-- Equipment Costs Section -->
+        <div class="section">
+            <h3>Equipment Costs (Equation 6)</h3>
+            <div id="equipment-container">
+                <div class="equipment-entry">
+                    <input type="text" placeholder="Equipment Name" class="eq-name">
+                    <input type="number" placeholder="Capital Cost (₹)" class="capital-cost" step="0.01">
+                    <input type="number" placeholder="Lifespan (years)" class="lifespan" step="1" value="10">
+                    <input type="number" placeholder="Operating Hours/Year" class="op-hours-year" step="1" value="2000">
+                    <input type="number" placeholder="Usage Hours" class="usage-hours" step="0.1">
+                </div>
+            </div>
+            <button onclick="addEquipment()">Add Equipment</button>
+        </div>
+
+        <!-- Additional Costs Section -->
+        <div class="section">
+            <h3>Additional Costs</h3>
+            <input type="number" id="overhead-rate" placeholder="Overhead Rate (%)" step="0.1" value="12.5">
+            <input type="number" id="miscellaneous" placeholder="Miscellaneous Costs (₹)" step="0.01">
+            <input type="number" id="total-biomass" placeholder="Total Biomass Input (kg)" step="0.1" value="1">
+        </div>
+    </div>
+
+    <button onclick="calculateCost()" style="width: 100%; font-size: 18px; margin: 20px 0;">Calculate Total Cost</button>
+
+    <div id="results" class="result" style="display: none;">
+        <h3>Cost Analysis Results</h3>
+        <div id="cost-breakdown"></div>
+        <div style="margin-top: 15px;">
+            <input type="text" id="material-name" placeholder="Material Name" style="width: 200px; margin-right: 10px;">
+            <button onclick="saveCalculation()">Save Calculation</button>
+        </div>
+    </div>
+
+    <div id="saved-calculations" class="section" style="display: none;">
+        <h3>Saved Calculations</h3>
+        <div style="margin-bottom: 15px;">
+            <button onclick="exportTXT()">Export All as TXT</button>
+            <button onclick="exportCSV()">Export All as CSV</button>
+        </div>
+        <div id="saved-list"></div>
+    </div>
+
+    <script>
+        function addChemical() {
+            const container = document.getElementById('chemicals-container');
+            const div = document.createElement('div');
+            div.className = 'chemical-entry';
+            div.innerHTML = `
+                <input type="text" placeholder="Chemical Name" class="chem-name">
+                <input type="number" placeholder="Price 1 (₹/kg)" class="price1" step="0.01">
+                <input type="number" placeholder="Price 2 (₹/kg)" class="price2" step="0.01">
+                <input type="number" placeholder="Price 3 (₹/kg)" class="price3" step="0.01">
+                <input type="number" placeholder="Price 4 (₹/kg)" class="price4" step="0.01">
+                <input type="number" placeholder="Price 5 (₹/kg)" class="price5" step="0.01">
+                <input type="number" placeholder="Mass Used (kg)" class="mass-used" step="0.001">
+                <button class="remove-btn" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addBiomass() {
+            const container = document.getElementById('biomass-container');
+            const div = document.createElement('div');
+            div.className = 'biomass-entry';
+            div.innerHTML = `
+                <input type="text" placeholder="Biomass Name" class="biomass-name">
+                <input type="number" placeholder="Price 1 (₹/kg)" class="b-price1" step="0.01">
+                <input type="number" placeholder="Price 2 (₹/kg)" class="b-price2" step="0.01">
+                <input type="number" placeholder="Price 3 (₹/kg)" class="b-price3" step="0.01">
+                <input type="number" placeholder="Price 4 (₹/kg)" class="b-price4" step="0.01">
+                <input type="number" placeholder="Price 5 (₹/kg)" class="b-price5" step="0.01">
+                <input type="number" placeholder="Mass Used (kg)" class="biomass-mass" step="0.001">
+                <button class="remove-btn" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addEnergyEntry() {
+            const container = document.getElementById('energy-container');
+            const div = document.createElement('div');
+            div.className = 'energy-entry';
+            div.innerHTML = `
+                <input type="text" placeholder="Equipment/Process Name" class="equipment-name">
+                <input type="number" placeholder="Power (kW)" class="power" step="0.01">
+                <input type="number" placeholder="Time (hours)" class="energy-time" step="0.1">
+                <button class="remove-btn" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addEquipment() {
+            const container = document.getElementById('equipment-container');
+            const div = document.createElement('div');
+            div.className = 'equipment-entry';
+            div.innerHTML = `
+                <input type="text" placeholder="Equipment Name" class="eq-name">
+                <input type="number" placeholder="Capital Cost (₹)" class="capital-cost" step="0.01">
+                <input type="number" placeholder="Lifespan (years)" class="lifespan" step="1" value="10">
+                <input type="number" placeholder="Operating Hours/Year" class="op-hours-year" step="1" value="2000">
+                <input type="number" placeholder="Usage Hours" class="usage-hours" step="0.1">
+                <button class="remove-btn" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(div);
+        }
+
+        let savedCalculations = JSON.parse(localStorage.getItem('costCalculations')) || [];
+        let currentCalculation = null;
+
+        function calculateCost() {
+            // Calculate Chemical Costs (Equation 3.1-3.2)
+            let chemicalCost = 0;
+            const chemicalEntries = document.querySelectorAll('.chemical-entry');
+            chemicalEntries.forEach(entry => {
+                const prices = [
+                    parseFloat(entry.querySelector('.price1').value) || 0,
+                    parseFloat(entry.querySelector('.price2').value) || 0,
+                    parseFloat(entry.querySelector('.price3').value) || 0,
+                    parseFloat(entry.querySelector('.price4').value) || 0,
+                    parseFloat(entry.querySelector('.price5').value) || 0
+                ];
+                const avgPrice = prices.reduce((a, b) => a + b, 0) / 5;
+                const massUsed = parseFloat(entry.querySelector('.mass-used').value) || 0;
+                chemicalCost += (avgPrice / 1000) * massUsed * 1000; // Convert to proper units
+            });
+
+            // Calculate Biomass Costs (Equation 3.3-3.5)
+            let biomassCost = 0;
+            const biomassEntries = document.querySelectorAll('.biomass-entry');
+            biomassEntries.forEach(entry => {
+                const prices = [
+                    parseFloat(entry.querySelector('.b-price1').value) || 0,
+                    parseFloat(entry.querySelector('.b-price2').value) || 0,
+                    parseFloat(entry.querySelector('.b-price3').value) || 0,
+                    parseFloat(entry.querySelector('.b-price4').value) || 0,
+                    parseFloat(entry.querySelector('.b-price5').value) || 0
+                ];
+                const avgPrice = prices.reduce((a, b) => a + b, 0) / 5;
+                const massUsed = parseFloat(entry.querySelector('.biomass-mass').value) || 0;
+                biomassCost += avgPrice * massUsed;
+            });
+
+            const transportCost = parseFloat(document.getElementById('transport-cost').value) || 0;
+            const precursorCost = chemicalCost + biomassCost + transportCost;
+
+            // Calculate Preparation Costs (Equation 4)
+            const manpower = parseFloat(document.getElementById('manpower').value) || 1;
+            const timeHours = parseFloat(document.getElementById('time-hours').value) || 0;
+            const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 151;
+            const waterCost = parseFloat(document.getElementById('water-cost').value) || 0;
+            const preparationCost = (manpower * timeHours * hourlyRate) + waterCost;
+
+            // Calculate Energy Costs (Equation 5)
+            let energyCost = 0;
+            const energyEntries = document.querySelectorAll('.energy-entry');
+            const electricityRate = parseFloat(document.getElementById('electricity-rate').value) || 5;
+            energyEntries.forEach(entry => {
+                const power = parseFloat(entry.querySelector('.power').value) || 0;
+                const time = parseFloat(entry.querySelector('.energy-time').value) || 0;
+                energyCost += power * time * electricityRate;
+            });
+
+            // Calculate Equipment Costs (Equation 6)
+            let equipmentCost = 0;
+            const equipmentEntries = document.querySelectorAll('.equipment-entry');
+            equipmentEntries.forEach(entry => {
+                const capitalCost = parseFloat(entry.querySelector('.capital-cost').value) || 0;
+                const lifespan = parseFloat(entry.querySelector('.lifespan').value) || 10;
+                const opHoursYear = parseFloat(entry.querySelector('.op-hours-year').value) || 2000;
+                const usageHours = parseFloat(entry.querySelector('.usage-hours').value) || 0;
+                equipmentCost += (capitalCost / (lifespan * opHoursYear)) * usageHours;
+            });
+
+            // Calculate Overhead and Miscellaneous
+            const overheadRate = parseFloat(document.getElementById('overhead-rate').value) || 12.5;
+            const overheadCost = (precursorCost + preparationCost + energyCost) * (overheadRate / 100);
+            const miscellaneousCost = parseFloat(document.getElementById('miscellaneous').value) || 0;
+
+            // Scale-up adjustment
+            const totalBiomass = parseFloat(document.getElementById('total-biomass').value) || 1;
+            
+            // Scale chemicals linearly with biomass input
+            const scaledChemicalCost = chemicalCost * totalBiomass;
+            const scaledBiomassCost = biomassCost * totalBiomass;
+            const scaledPrecursorCost = scaledChemicalCost + scaledBiomassCost + transportCost;
+            
+            // For >100kg biomass, apply 30% increase to non-chemical costs only
+            let nonChemicalCosts = preparationCost + energyCost + equipmentCost + miscellaneousCost;
+            let scaledOverheadCost = (scaledPrecursorCost + preparationCost + energyCost) * (overheadRate / 100);
+            
+            if (totalBiomass > 100) {
+                nonChemicalCosts *= 1.3; // 30% increase for non-chemical costs
+                scaledOverheadCost *= 1.3;
+            }
+
+            // Total Cost Calculation (Equation 8)
+            const totalCost = scaledPrecursorCost + nonChemicalCosts + scaledOverheadCost;
+            const costPerKg = totalCost / totalBiomass;
+
+            // Display Results
+            const resultsDiv = document.getElementById('results');
+            const breakdownDiv = document.getElementById('cost-breakdown');
+            
+            breakdownDiv.innerHTML = `
+                <h4>Cost Breakdown for ${totalBiomass}kg Biomass (₹)</h4>
+                <p><strong>Chemical Costs (scaled):</strong> ₹${scaledChemicalCost.toFixed(2)}</p>
+                <p><strong>Biomass Costs (scaled):</strong> ₹${scaledBiomassCost.toFixed(2)}</p>
+                <p><strong>Transportation Costs:</strong> ₹${transportCost.toFixed(2)}</p>
+                <p><strong>Precursor Costs (Equation 3):</strong> ₹${scaledPrecursorCost.toFixed(2)}</p>
+                <p><strong>Preparation Costs (Equation 4):</strong> ₹${preparationCost.toFixed(2)}${totalBiomass > 100 ? ' × 1.3 (30% increase) = ₹' + (preparationCost * 1.3).toFixed(2) : ''}</p>
+                <p><strong>Energy Costs (Equation 5):</strong> ₹${energyCost.toFixed(2)}${totalBiomass > 100 ? ' × 1.3 (30% increase) = ₹' + (energyCost * 1.3).toFixed(2) : ''}</p>
+                <p><strong>Equipment Costs (Equation 6):</strong> ₹${equipmentCost.toFixed(2)}${totalBiomass > 100 ? ' × 1.3 (30% increase) = ₹' + (equipmentCost * 1.3).toFixed(2) : ''}</p>
+                <p><strong>Overhead Costs (${overheadRate}%):</strong> ₹${scaledOverheadCost.toFixed(2)}</p>
+                <p><strong>Miscellaneous Costs:</strong> ₹${miscellaneousCost.toFixed(2)}${totalBiomass > 100 ? ' × 1.3 (30% increase) = ₹' + (miscellaneousCost * 1.3).toFixed(2) : ''}</p>
+                ${totalBiomass > 100 ? `<p><strong>Scale-up (30% on non-chemicals):</strong> Applied</p>` : ''}
+                <h4><strong>Final Total Cost (Equation 8): ₹${totalCost.toFixed(2)}</strong></h4>
+                <h4><strong>Cost per kg of Material: ₹${costPerKg.toFixed(2)}/kg</strong></h4>
+            `;
+            
+            // Store current calculation
+            currentCalculation = {
+                timestamp: new Date().toISOString(),
+                totalBiomass,
+                scaledChemicalCost,
+                scaledBiomassCost,
+                transportCost,
+                scaledPrecursorCost,
+                preparationCost,
+                energyCost,
+                equipmentCost,
+                scaledOverheadCost,
+                miscellaneousCost,
+                totalCost,
+                costPerKg,
+                overheadRate
+            };
+            
+            resultsDiv.style.display = 'block';
+        }
+
+        function saveCalculation() {
+            const materialName = document.getElementById('material-name').value || 'Unnamed Material';
+            if (currentCalculation) {
+                currentCalculation.materialName = materialName;
+                savedCalculations.push(currentCalculation);
+                localStorage.setItem('costCalculations', JSON.stringify(savedCalculations));
+                updateSavedList();
+                document.getElementById('material-name').value = '';
+            }
+        }
+
+        function updateSavedList() {
+            const savedDiv = document.getElementById('saved-calculations');
+            const listDiv = document.getElementById('saved-list');
+            
+            if (savedCalculations.length > 0) {
+                savedDiv.style.display = 'block';
+                listDiv.innerHTML = savedCalculations.map((calc, index) => `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 4px;">
+                        <strong>${calc.materialName}</strong> - ${new Date(calc.timestamp).toLocaleString()}<br>
+                        Total Cost: ₹${calc.totalCost.toFixed(2)} | Cost/kg: ₹${calc.costPerKg.toFixed(2)}/kg
+                        <button onclick="deleteSaved(${index})" class="remove-btn" style="float: right;">Delete</button>
+                    </div>
+                `).join('');
+            } else {
+                savedDiv.style.display = 'none';
+            }
+        }
+
+        function deleteSaved(index) {
+            savedCalculations.splice(index, 1);
+            localStorage.setItem('costCalculations', JSON.stringify(savedCalculations));
+            updateSavedList();
+        }
+
+        function exportTXT() {
+            if (savedCalculations.length === 0) {
+                alert('No saved calculations to export!');
+                return;
+            }
+            
+            let content = 'Carbon/Biochar Cost Analysis Results\n';
+            content += '=====================================\n\n';
+            
+            savedCalculations.forEach(calc => {
+                content += `Material: ${calc.materialName}\n`;
+                content += `Date: ${new Date(calc.timestamp).toLocaleString()}\n`;
+                content += `Biomass Input: ${calc.totalBiomass}kg\n`;
+                content += `Chemical Costs: ₹${calc.scaledChemicalCost.toFixed(2)}\n`;
+                content += `Biomass Costs: ₹${calc.scaledBiomassCost.toFixed(2)}\n`;
+                content += `Transportation: ₹${calc.transportCost.toFixed(2)}\n`;
+                content += `Preparation: ₹${calc.preparationCost.toFixed(2)}\n`;
+                content += `Energy: ₹${calc.energyCost.toFixed(2)}\n`;
+                content += `Equipment: ₹${calc.equipmentCost.toFixed(2)}\n`;
+                content += `Overhead: ₹${calc.scaledOverheadCost.toFixed(2)}\n`;
+                content += `Miscellaneous: ₹${calc.miscellaneousCost.toFixed(2)}\n`;
+                content += `Total Cost: ₹${calc.totalCost.toFixed(2)}\n`;
+                content += `Cost per kg: ₹${calc.costPerKg.toFixed(2)}/kg\n`;
+                content += '-----------------------------------\n\n';
+            });
+            
+            downloadFile(content, 'all-cost-analysis.txt', 'text/plain');
+        }
+
+        function exportCSV() {
+            if (savedCalculations.length === 0) {
+                alert('No saved calculations to export!');
+                return;
+            }
+            
+            let csv = 'Material Name,Date,Biomass Input (kg),Chemical Costs,Biomass Costs,Transportation,Preparation,Energy,Equipment,Overhead,Miscellaneous,Total Cost,Cost per kg\n';
+            
+            savedCalculations.forEach(calc => {
+                csv += `"${calc.materialName}","${new Date(calc.timestamp).toLocaleString()}",${calc.totalBiomass},${calc.scaledChemicalCost.toFixed(2)},${calc.scaledBiomassCost.toFixed(2)},${calc.transportCost.toFixed(2)},${calc.preparationCost.toFixed(2)},${calc.energyCost.toFixed(2)},${calc.equipmentCost.toFixed(2)},${calc.scaledOverheadCost.toFixed(2)},${calc.miscellaneousCost.toFixed(2)},${calc.totalCost.toFixed(2)},${calc.costPerKg.toFixed(2)}\n`;
+            });
+            
+            downloadFile(csv, 'all-cost-analysis.csv', 'text/csv');
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Load saved calculations on page load
+        window.onload = function() {
+            updateSavedList();
+        }
+    </script>
+</body>
+</html>
