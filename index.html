@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Carbon/Biochar Techno-Economic Cost Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 40%, #fdf4ff 70%, #fff7ed 100%);
+            color: #1e293b;
+            padding: 30px 20px;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(ellipse at 15% 20%, rgba(99,102,241,0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 10%, rgba(20,184,166,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 85%, rgba(168,85,247,0.13) 0%, transparent 50%),
+                radial-gradient(ellipse at 5% 80%, rgba(251,146,60,0.12) 0%, transparent 45%);
+        }
+        .page-wrap { max-width: 1280px; margin: 0 auto; }
+        h1 {
+            text-align: center; font-size: 1.75rem; font-weight: 700;
+            background: linear-gradient(90deg, #4f46e5, #0d9488, #7c3aed);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            padding-bottom: 16px; margin-bottom: 24px;
+            border-bottom: 2px solid rgba(99,102,241,0.2);
+        }
+        .tab-bar { display:flex; gap:10px; margin-bottom:22px; }
+        .tab-bar button {
+            flex:1; padding:11px; border-radius:12px; border:none; font-weight:600; font-size:.95rem;
+            background: rgba(255,255,255,0.55); backdrop-filter: blur(12px);
+            color: #4f46e5; border: 1.5px solid rgba(99,102,241,0.25);
+            cursor:pointer; transition: all .2s;
+            box-shadow: 0 2px 12px rgba(99,102,241,0.08);
+        }
+        .tab-bar button:hover { background: rgba(99,102,241,0.12); transform: translateY(-1px); }
+        .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+        /* Colored glassy cards */
+        .section {
+            padding: 22px 20px; border-radius: 20px;
+            backdrop-filter: blur(18px) saturate(1.6);
+            border: 1.5px solid rgba(255,255,255,0.55);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.07), 0 1.5px 4px rgba(0,0,0,0.04);
+            transition: transform .2s, box-shadow .2s;
+        }
+        .section:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.11); }
+        .section:nth-child(1) { background: linear-gradient(135deg, rgba(224,231,255,0.72), rgba(255,255,255,0.62)); }
+        .section:nth-child(2) { background: linear-gradient(135deg, rgba(204,251,241,0.72), rgba(255,255,255,0.62)); }
+        .section:nth-child(3) { background: linear-gradient(135deg, rgba(254,243,199,0.72), rgba(255,255,255,0.62)); }
+        .section:nth-child(4) { background: linear-gradient(135deg, rgba(243,232,255,0.72), rgba(255,255,255,0.62)); }
+        .section h3 {
+            font-size: 1rem; font-weight: 600; margin-bottom: 14px;
+            color: #1e293b; letter-spacing: .01em;
+        }
+        input {
+            width:100%; padding:9px 12px; margin:5px 0; border-radius:10px;
+            border: 1.5px solid rgba(148,163,184,0.35);
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(6px);
+            font-size:.9rem; color:#1e293b; outline:none; transition: border .2s, box-shadow .2s;
+        }
+        input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.13); }
+        button {
+            width:100%; padding:10px; margin:6px 0; border-radius:10px; border:none;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color:white; font-weight:600; font-size:.9rem; cursor:pointer;
+            box-shadow: 0 3px 12px rgba(99,102,241,0.25); transition: all .2s;
+        }
+        button:hover { background: linear-gradient(135deg, #4f46e5, #4338ca); transform: translateY(-1px); }
+        .remove-btn { background: linear-gradient(135deg, #f43f5e, #dc2626); box-shadow: 0 3px 10px rgba(220,38,38,0.2); }
+        .remove-btn:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .entry {
+            border: 1.5px solid rgba(255,255,255,0.6); padding:12px; border-radius:14px; margin:10px 0;
+            background: rgba(255,255,255,0.55); backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        /* Tab panels */
+        .tab-panel .section {
+            background: linear-gradient(135deg, rgba(240,253,250,0.78), rgba(255,255,255,0.65));
+        }
+        .tab-panel .section:nth-child(1) {
+            background: linear-gradient(135deg, rgba(240,253,250,0.78), rgba(255,255,255,0.65));
+        }
+        /* Results */
+        .result {
+            margin-top: 24px; padding: 24px; border-radius: 20px;
+            background: linear-gradient(135deg, rgba(240,253,244,0.82), rgba(255,255,255,0.72));
+            border: 1.5px solid rgba(134,239,172,0.45);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(16,185,129,0.1);
+        }
+        .result h3 { color: #065f46; margin-bottom:10px; }
+        .result p { margin: 6px 0; font-size:.93rem; line-height:1.6; }
+    </style>
+</head>
+<body>
+<div class="page-wrap">
+<h1>Advanced Techno-Economic Cost Calculator</h1>
+<div class="tab-bar">
+  <button onclick="switchTab('lab')">🔬 Lab Scale</button>
+  <button onclick="switchTab('pilot')">🏭 Pilot Scale</button>
+</div>
+
+<!-- shared detailed synthesis inputs -->
+<div class="grid">
+  <div class="section">
+    <h3>Chemical Cost Inputs (5 suppliers + usage)</h3>
+    <div id="chemicals-container">
+      <div class="entry chemical-entry">
+        <input class="chem-name" type="text" placeholder="Chemical name (e.g., Na₂CO₃)">
+        <input class="price1" type="number" placeholder="Price 1 (₹/kg)">
+        <input class="price2" type="number" placeholder="Price 2 (₹/kg)">
+        <input class="price3" type="number" placeholder="Price 3 (₹/kg)">
+        <input class="price4" type="number" placeholder="Price 4 (₹/kg)">
+        <input class="price5" type="number" placeholder="Price 5 (₹/kg)">
+        <input class="mass-used" type="number" placeholder="Chemical used (kg)">
+      </div>
+    </div>
+    <button onclick="addChemical()">+ Add Chemical</button>
+  </div>
+
+  <div class="section">
+    <h3>Biomass + Transport Inputs</h3>
+    <div id="biomass-container">
+      <div class="entry biomass-entry">
+        <input class="biomass-name" type="text" placeholder="Biomass name (e.g., Groundnut shell)">
+        <input class="b-price1" type="number" placeholder="Price 1 (₹/kg)">
+        <input class="b-price2" type="number" placeholder="Price 2 (₹/kg)">
+        <input class="b-price3" type="number" placeholder="Price 3 (₹/kg)">
+        <input class="b-price4" type="number" placeholder="Price 4 (₹/kg)">
+        <input class="b-price5" type="number" placeholder="Price 5 (₹/kg)">
+        <input class="biomass-mass" type="number" placeholder="Biomass used (kg)">
+      </div>
+    </div>
+    <button onclick="addBiomass()">+ Add Biomass</button>
+    <input id="transport-cost" type="number" placeholder="Transport cost (₹)">
+  </div>
+
+  <div class="section">
+    <h3>Preparation + Utility Inputs</h3>
+    <input id="manpower" type="number" value="1" placeholder="Personnel">
+    <input id="time-hours" type="number" placeholder="Preparation time (h)">
+    <input id="hourly-rate" type="number" value="151" placeholder="Wage (₹/h)">
+    <input id="water-cost" type="number" placeholder="DI water + washing (₹)">
+    <input id="miscellaneous" type="number" placeholder="Misc prep / consumables (₹)">
+  </div>
+
+  <div class="section">
+    <h3>Energy + Equipment Inputs</h3>
+    <div id="energy-container">
+      <div class="entry energy-entry">
+        <input class="energy-name" type="text" placeholder="Process / equipment name">
+        <input class="power" type="number" placeholder="Power (kW)">
+        <input class="energy-time" type="number" placeholder="Time (h)">
+      </div>
+    </div>
+    <button onclick="addEnergyEntry()">+ Add Energy Stage</button>
+    <input id="electricity-rate" type="number" value="5" placeholder="Electricity rate (₹/kWh)">
+    <div id="equipment-container">
+      <div class="entry equipment-entry">
+        <input class="eq-name" type="text" placeholder="Equipment name (e.g., Tubular furnace)">
+        <input class="capital-cost" type="number" placeholder="Equipment capital (₹)">
+        <input class="lifespan" type="number" value="10" placeholder="Lifespan (years)">
+        <input class="op-hours-year" type="number" value="2000" placeholder="Hours/year">
+        <input class="usage-hours" type="number" placeholder="Batch usage hours">
+      </div>
+    </div>
+    <button onclick="addEquipment()">+ Add Equipment</button>
+    <input id="shared-overhead" type="number" value="12.5" placeholder="Overhead (%)">
+  </div>
+</div>
+
+<div id="lab" class="tab-panel">
+  <div class="section"><h3>Lab Scale Output Inputs</h3>
+    <input id="lab-yield" type="number" placeholder="Recovered yield (kg)">
+    <input id="lab-qmax" type="number" placeholder="qmax (mg/g)">
+    <input id="lab-reuse" type="number" placeholder="Reuse cycles">
+    <button onclick="calculateByMode('lab')">Calculate Lab Scale</button>
+  </div>
+</div>
+<div id="pilot" class="tab-panel" style="display:none;">
+  <div class="section"><h3>Pilot Scale Output Inputs</h3>
+    <input id="pilot-yield" type="number" placeholder="Recovered yield (kg)">
+    <input id="pilot-qmax" type="number" placeholder="qmax (mg/g)">
+    <input id="pilot-reuse" type="number" placeholder="Reuse cycles">
+    <input id="pilot-scale-factor" type="number" value="1.30" placeholder="Scale factor">
+    <button onclick="calculateByMode('pilot')">Calculate Pilot Scale</button>
+  </div>
+</div>
+<div id="results" class="result" style="display:none;"></div>
+<script>
+function num(v){return parseFloat(v)||0}
+function avg(a){ const valid=a.filter(v=>!isNaN(v)&&v>0); return valid.length ? valid.reduce((x,y)=>x+y,0)/valid.length : 0; }
+function switchTab(t){
+  document.getElementById('lab').style.display = t === 'lab' ? 'block' : 'none';
+  document.getElementById('pilot').style.display = t === 'pilot' ? 'block' : 'none';
+}
+function addChemical(){document.getElementById('chemicals-container').insertAdjacentHTML('beforeend',`<div class='entry chemical-entry'><input class='chem-name' type='text' placeholder='Chemical name'><input class='price1' type='number' placeholder='Price 1'><input class='price2' type='number' placeholder='Price 2'><input class='price3' type='number' placeholder='Price 3'><input class='price4' type='number' placeholder='Price 4'><input class='price5' type='number' placeholder='Price 5'><input class='mass-used' type='number' placeholder='Chemical used (kg)'><button class='remove-btn' onclick='this.parentElement.remove()'>Remove</button></div>`)}
+function addBiomass(){document.getElementById('biomass-container').insertAdjacentHTML('beforeend',`<div class='entry biomass-entry'><input class='biomass-name' type='text' placeholder='Biomass name'><input class='b-price1' type='number'><input class='b-price2' type='number'><input class='b-price3' type='number'><input class='b-price4' type='number'><input class='b-price5' type='number'><input class='biomass-mass' type='number' placeholder='Biomass used (kg)'><button class='remove-btn' onclick='this.parentElement.remove()'>Remove</button></div>`)}
+function addEnergyEntry(){document.getElementById('energy-container').insertAdjacentHTML('beforeend',`<div class='entry energy-entry'><input class='energy-name' type='text' placeholder='Process name'><input class='power' type='number' placeholder='Power (kW)'><input class='energy-time' type='number' placeholder='Time (h)'><button class='remove-btn' onclick='this.parentElement.remove()'>Remove</button></div>`)}
+function addEquipment(){document.getElementById('equipment-container').insertAdjacentHTML('beforeend',`<div class='entry equipment-entry'><input class='eq-name' type='text' placeholder='Equipment name'><input class='capital-cost' type='number' placeholder='Equipment capital'><input class='lifespan' type='number' value='10'><input class='op-hours-year' type='number' value='2000'><input class='usage-hours' type='number' placeholder='Batch usage hours'><button class='remove-btn' onclick='this.parentElement.remove()'>Remove</button></div>`)}
+function calculateByMode(mode){
+ const yieldInput = num(document.getElementById(mode+'-yield').value);
+ const q = num(document.getElementById(mode+'-qmax').value);
+ const r = num(document.getElementById(mode+'-reuse').value);
+ if(yieldInput<=0){
+   document.getElementById('results').style.display='block';
+   document.getElementById('results').innerHTML='<h3>Please enter a valid recovered yield (>0 kg).</h3>';
+   return;
+ }
+ if(q<0 || r<0){
+   document.getElementById('results').style.display='block';
+   document.getElementById('results').innerHTML='<h3>qmax and reuse cycles cannot be negative.</h3>';
+   return;
+ }
+ let chem=0, chemLines=[];
+ document.querySelectorAll('.chemical-entry').forEach(e=>{
+   const name = e.querySelector('.chem-name')?.value || 'Chemical';
+   const cost = avg([1,2,3,4,5].map(i=>num(e.querySelector('.price'+i).value))) * num(e.querySelector('.mass-used').value);
+   chem += cost; chemLines.push(`${name}: ₹${cost.toFixed(2)}`);
+ });
+ let bio=0, bioLines=[];
+ document.querySelectorAll('.biomass-entry').forEach(e=>{
+   const name = e.querySelector('.biomass-name')?.value || 'Biomass';
+   const cost = avg([1,2,3,4,5].map(i=>num(e.querySelector('.b-price'+i).value))) * num(e.querySelector('.biomass-mass').value);
+   bio += cost; bioLines.push(`${name}: ₹${cost.toFixed(2)}`);
+ });
+ const precursor = chem + bio + num(document.getElementById('transport-cost').value);
+ const prep = num(document.getElementById('manpower').value)*num(document.getElementById('time-hours').value)*num(document.getElementById('hourly-rate').value)+num(document.getElementById('water-cost').value)+num(document.getElementById('miscellaneous').value);
+ let energy=0, energyLines=[];
+ document.querySelectorAll('.energy-entry').forEach(e=>{
+   const nm = e.querySelector('.energy-name')?.value || 'Energy stage';
+   const c = num(e.querySelector('.power').value)*num(e.querySelector('.energy-time').value)*num(document.getElementById('electricity-rate').value);
+   energy += c; energyLines.push(`${nm}: ₹${c.toFixed(2)}`);
+ });
+ let equip=0, equipLines=[];
+ document.querySelectorAll('.equipment-entry').forEach(e=>{
+   const nm = e.querySelector('.eq-name')?.value || 'Equipment';
+   const c = (num(e.querySelector('.capital-cost').value)/(Math.max(1,num(e.querySelector('.lifespan').value))*Math.max(1,num(e.querySelector('.op-hours-year').value))))*num(e.querySelector('.usage-hours').value);
+   equip += c; equipLines.push(`${nm}: ₹${c.toFixed(2)}`);
+ });
+ let nonChemicalBefore = prep + energy + equip;
+ let nonChemical = nonChemicalBefore;
+ let scaleMsg = 'Not applied';
+ if(mode==='pilot'){
+   const sf = (num(document.getElementById('pilot-scale-factor').value)||1.3);
+   nonChemical *= sf;
+   scaleMsg = `Before: ₹${nonChemicalBefore.toFixed(2)} | SF: ${sf.toFixed(2)}× | After: ₹${nonChemical.toFixed(2)}`;
+ }
+ const overhead=(precursor+nonChemical)*(num(document.getElementById('shared-overhead').value)/100);
+ const total=precursor+nonChemical+overhead;
+ const unit=total/yieldInput;
+ const ads=q>0?unit/q:0;
+ const life=r>0?unit/r:0;
+ document.getElementById('results').style.display='block';
+ document.getElementById('results').innerHTML=`<h3>${mode==='lab'?'Lab':'Pilot'} Scale Detailed Results</h3>
+ <p><b>Chemical Breakdown:</b><br>${chemLines.join('<br>')}</p>
+ <p><b>Biomass Breakdown:</b><br>${bioLines.join('<br>')}</p>
+ <p><b>Energy Breakdown:</b><br>${energyLines.join('<br>')}</p>
+ <p><b>Equipment Breakdown:</b><br>${equipLines.join('<br>')}</p>
+ <p><b>Scale-up Details:</b> ${scaleMsg}</p>
+ <p><b>Precursor Cost:</b> ₹${precursor.toFixed(2)}</p>
+ <p><b>Preparation:</b> ₹${prep.toFixed(2)}</p>
+ <p><b>Overhead:</b> ₹${overhead.toFixed(2)}</p>
+ <h3><b>Total:</b> ₹${total.toFixed(2)}</h3>
+ <p><b>Unit Cost:</b> ₹${unit.toFixed(2)}/kg</p>
+ <p><b>Adsorption Cost:</b> ₹${ads.toFixed(6)} per (mg/g)</p>
+ <p><b>Lifecycle Cost:</b> ₹${life.toFixed(2)}</p>`;
+}
+</script>
+</div>
+</body>
+</html>
