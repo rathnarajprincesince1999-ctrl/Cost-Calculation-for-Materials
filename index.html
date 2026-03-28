@@ -13,6 +13,7 @@
             background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 40%, #fdf4ff 70%, #fff7ed 100%);
             color: #1e293b;
             padding: 30px 20px;
+            transition: background 0.5s ease;
         }
         body::before {
             content: '';
@@ -108,7 +109,7 @@
 
 <!-- shared detailed synthesis inputs -->
 <div class="grid">
-  <div class="section">
+  <div class="section" data-bg="linear-gradient(135deg, #c7d2fe 0%, #e0e7ff 40%, #eef2ff 100%)">
     <h3>Chemical Cost Inputs (5 suppliers + usage)</h3>
     <div id="chemicals-container">
       <div class="entry chemical-entry">
@@ -124,7 +125,7 @@
     <button onclick="addChemical()">+ Add Chemical</button>
   </div>
 
-  <div class="section">
+  <div class="section" data-bg="linear-gradient(135deg, #99f6e4 0%, #ccfbf1 40%, #f0fdfa 100%)">
     <h3>Biomass + Transport Inputs</h3>
     <div id="biomass-container">
       <div class="entry biomass-entry">
@@ -141,7 +142,7 @@
     <input id="transport-cost" type="number" placeholder="Transport cost (₹)">
   </div>
 
-  <div class="section">
+  <div class="section" data-bg="linear-gradient(135deg, #fde68a 0%, #fef3c7 40%, #fffbeb 100%)">
     <h3>Preparation + Utility Inputs</h3>
     <input id="manpower" type="number" value="1" placeholder="Personnel">
     <input id="time-hours" type="number" placeholder="Preparation time (h)">
@@ -150,7 +151,7 @@
     <input id="miscellaneous" type="number" placeholder="Misc prep / consumables (₹)">
   </div>
 
-  <div class="section">
+  <div class="section" data-bg="linear-gradient(135deg, #d8b4fe 0%, #f3e8ff 40%, #faf5ff 100%)">
     <h3>Energy + Equipment Inputs</h3>
     <div id="energy-container">
       <div class="entry energy-entry">
@@ -176,7 +177,7 @@
 </div>
 
 <div id="lab" class="tab-panel">
-  <div class="section"><h3>Lab Scale Output Inputs</h3>
+  <div class="section" data-bg="linear-gradient(135deg, #a5f3fc 0%, #e0f2fe 40%, #f0f9ff 100%)"><h3>Lab Scale Output Inputs</h3>
     <input id="lab-yield" type="number" placeholder="Recovered yield (kg)">
     <input id="lab-qmax" type="number" placeholder="qmax (mg/g)">
     <input id="lab-reuse" type="number" placeholder="Reuse cycles">
@@ -184,7 +185,7 @@
   </div>
 </div>
 <div id="pilot" class="tab-panel" style="display:none;">
-  <div class="section"><h3>Pilot Scale Output Inputs</h3>
+  <div class="section" data-bg="linear-gradient(135deg, #fbcfe8 0%, #fce7f3 40%, #fdf2f8 100%)"><h3>Pilot Scale Output Inputs</h3>
     <input id="pilot-yield" type="number" placeholder="Recovered yield (kg)">
     <input id="pilot-qmax" type="number" placeholder="qmax (mg/g)">
     <input id="pilot-reuse" type="number" placeholder="Reuse cycles">
@@ -272,6 +273,16 @@ function calculateByMode(mode){
  <p><b>Adsorption Cost:</b> ₹${ads.toFixed(6)} per (mg/g)</p>
  <p><b>Lifecycle Cost:</b> ₹${life.toFixed(2)}</p>`;
 }
+// Card hover → background color change
+const defaultBg = 'linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 40%, #fdf4ff 70%, #fff7ed 100%)';
+document.querySelectorAll('.section[data-bg]').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    document.body.style.background = card.dataset.bg;
+  });
+  card.addEventListener('mouseleave', () => {
+    document.body.style.background = defaultBg;
+  });
+});
 </script>
 </div>
 </body>
