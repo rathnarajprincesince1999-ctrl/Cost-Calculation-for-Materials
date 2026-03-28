@@ -150,6 +150,7 @@
 
   <div class="section" data-bg="linear-gradient(135deg, #99f6e4 0%, #ccfbf1 40%, #f0fdfa 100%)">
     <h3>Biomass + Transport Inputs</h3>
+    <input id="base-biomass" type="number" placeholder="Base batch biomass (kg) — reference scale for energy/equipment" style="border-color:rgba(13,148,136,0.5);background:rgba(204,251,241,0.5);">
     <div id="biomass-container">
       <div class="entry biomass-entry">
         <input class="biomass-name" type="text" placeholder="Biomass name (e.g., Groundnut shell)">
@@ -272,17 +273,21 @@ function calculateByMode(mode){
    bio += cost; bioLines.push(`${name}: ₹${cost.toFixed(2)}`);
  });
  const precursor = chem + bio + num(document.getElementById('transport-cost').value);
- const prep = num(document.getElementById('manpower').value)*num(document.getElementById('time-hours').value)*num(document.getElementById('hourly-rate').value)+num(document.getElementById('water-cost').value)+num(document.getElementById('miscellaneous').value);
+ // Scale factor: if base biomass is set, scale energy/equip/prep proportionally
+ const baseBio = num(document.getElementById('base-biomass').value);
+ const totalBioMass = (() => { let t=0; document.querySelectorAll('.biomass-entry').forEach(e=>{ t+=num(e.querySelector('.biomass-mass').value); }); return t; })();
+ const scaleMult = (baseBio > 0 && totalBioMass > 0) ? (totalBioMass / baseBio) : 1;
+ const prep = (num(document.getElementById('manpower').value)*num(document.getElementById('time-hours').value)*num(document.getElementById('hourly-rate').value)+num(document.getElementById('water-cost').value)+num(document.getElementById('miscellaneous').value)) * scaleMult;
  let energy=0, energyLines=[];
  document.querySelectorAll('.energy-entry').forEach(e=>{
    const nm = e.querySelector('.energy-name')?.value || 'Energy stage';
-   const c = num(e.querySelector('.power').value)*num(e.querySelector('.energy-time').value)*num(document.getElementById('electricity-rate').value);
+   const c = num(e.querySelector('.power').value)*num(e.querySelector('.energy-time').value)*num(document.getElementById('electricity-rate').value) * scaleMult;
    energy += c; energyLines.push(`${nm}: ₹${c.toFixed(2)}`);
  });
  let equip=0, equipLines=[];
  document.querySelectorAll('.equipment-entry').forEach(e=>{
    const nm = e.querySelector('.eq-name')?.value || 'Equipment';
-   const c = (num(e.querySelector('.capital-cost').value)/(Math.max(1,num(e.querySelector('.lifespan').value))*Math.max(1,num(e.querySelector('.op-hours-year').value))))*num(e.querySelector('.usage-hours').value);
+   const c = (num(e.querySelector('.capital-cost').value)/(Math.max(1,num(e.querySelector('.lifespan').value))*Math.max(1,num(e.querySelector('.op-hours-year').value))))*num(e.querySelector('.usage-hours').value) * scaleMult;
    equip += c; equipLines.push(`${nm}: ₹${c.toFixed(2)}`);
  });
  let nonChemicalBefore = prep + energy + equip;
@@ -300,6 +305,7 @@ function calculateByMode(mode){
  const life=r>0?unit/r:0;
  document.getElementById('results').style.display='block';
  document.getElementById('results').innerHTML=`<h3>${mode==='lab'?'Lab':'Pilot'} Scale Detailed Results</h3>
+ ${scaleMult!==1?`<p style="background:rgba(99,102,241,0.1);padding:8px 12px;border-radius:8px;font-size:.85rem;"><b>Batch Scale Multiplier: ${scaleMult.toFixed(3)}×</b> (Base: ${baseBio} kg → Current: ${totalBioMass} kg)</p>`:''}
  <p><b>Chemical Breakdown:</b><br>${chemLines.join('<br>')}</p>
  <p><b>Biomass Breakdown:</b><br>${bioLines.join('<br>')}</p>
  <p><b>Energy Breakdown:</b><br>${energyLines.join('<br>')}</p>
